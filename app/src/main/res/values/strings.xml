@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">Notes App</string>
-    <string name="add_new_item_description">يمكنك  إضافة ملاحظة إلى القائمة و اختيار نوع ولون الملاحظة.</string>
-    <string name="add">اضافة</string>
-    <string name="add_note_text">أضف ملاحظة</string>
-</resources>
