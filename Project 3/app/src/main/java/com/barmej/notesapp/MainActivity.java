@@ -3,30 +3,27 @@ package com.barmej.notesapp;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.barmej.notesapp.Adapters.NotesAdapter;
 import com.barmej.notesapp.Listener.ItemClickListener;
 import com.barmej.notesapp.Listener.ItemLongClickListener;
+import com.barmej.notesapp.NotesEdit.CheckNoteEdit;
+import com.barmej.notesapp.NotesEdit.NormalNoteEdit;
+import com.barmej.notesapp.NotesEdit.PhotoNoteEdit;
 import com.barmej.notesapp.classes.CheckNote;
 import com.barmej.notesapp.classes.Note;
 import com.barmej.notesapp.classes.PhotoNote;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -55,14 +52,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onLongClickItem(int position) {
                 removeNote(position);
-                Toast.makeText(MainActivity.this, position+"", Toast.LENGTH_SHORT).show();
+
             }
-        }, new ItemClickListener() {
+        }, new ItemClickListener()
+        {
             @Override
-            public void onClickListener(int position) {
+            public void onClickListener(int position)
+            {
                 editNote(position);
             }
-        } );
+        } , MainActivity.this);
 
         notesRecyclerView.setAdapter(mNotesAdapter);
 
@@ -81,39 +80,50 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RECEIVE_NOTES) {
-            if (resultCode == RESULT_OK && data != null) {
-                Toast.makeText(this, notesItems.size()+"", Toast.LENGTH_SHORT).show();
+
+        if (requestCode == RECEIVE_NOTES)
+        {
+            if (resultCode == RESULT_OK && data != null)
+            {
+                Toast.makeText(this, "notesItems: "+notesItems.size(), Toast.LENGTH_SHORT).show();
                 photoUri = data.getParcelableExtra(Constants.EXTRA_PHOTO_URI);
                 String NoteCallBack = data.getStringExtra(Constants.THE_NOTE);
                 String checkBoxCallBack = data.getStringExtra(Constants.CHECK_BOX_TEXT);
                 int color = data.getIntExtra(Constants.COLOR , 1);
 
-                if (photoUri != null){
+                if (photoUri != null)
+                {
                    PhotoNote photoNote = new PhotoNote(color ,NoteCallBack , photoUri );
                     notesItems.add(photoNote);
                     mNotesAdapter.notifyItemInserted(notesItems.size());
-                    Toast.makeText(this, "Created Photo Note", Toast.LENGTH_SHORT).show();
-                }else if (checkBoxCallBack != null){
+                }
+                else if (checkBoxCallBack != null)
+                {
                     CheckNote checkNote = new CheckNote(color ,checkBoxCallBack, false);
                     notesItems.add(checkNote);
                     mNotesAdapter.notifyItemInserted(notesItems.size());
-                    Toast.makeText(this, "Created Check Note", Toast.LENGTH_SHORT).show();
-                }else{
+                }
+                else
+                {
                     Note note1 = new Note(color, NoteCallBack);
                     notesItems.add(note1);
                     mNotesAdapter.notifyItemInserted(notesItems.size());
-                    Toast.makeText(this, "Created Normal Note", Toast.LENGTH_SHORT).show();
 
                 }
 
-            } else {
+            }
+            else
+            {
                 Toast.makeText(this, R.string.didnt_add_photo , Toast.LENGTH_SHORT).show();
             }
-        } else if (requestCode == EDIT_NOTES){
-            if (resultCode == RESULT_OK){
+        }
+        else if (requestCode == EDIT_NOTES)
+        {
+            if (resultCode == RESULT_OK)
+            {
 
                 Bundle bundle = data.getExtras();
                 String newTextCallBack = bundle.getString("NewText");
@@ -122,16 +132,20 @@ public class MainActivity extends AppCompatActivity {
                 String newTextPhotoCallBack = bundle.getString("NewTextPhoto");
                 Uri photoNoteImage = bundle.getParcelable("Photo");
 
-                if (note instanceof CheckNote){
+                if (note instanceof CheckNote)
+                {
                     note.setNote(newTextCallBack);
                     mNotesAdapter.notifyItemChanged(notePosition);
                 }
-                else if (note instanceof PhotoNote)  {
+                else if (note instanceof PhotoNote)
+                {
                     PhotoNote photoNote = (PhotoNote) note;
                     photoNote.setNote(newTextPhotoCallBack);
                     photoNote.setImage(photoNoteImage);
                     mNotesAdapter.notifyItemChanged(notePosition);
-                } else{
+                }
+                else
+                {
                     note.setNote(newTextCallBack);
                     mNotesAdapter.notifyItemChanged(notePosition);
                 }

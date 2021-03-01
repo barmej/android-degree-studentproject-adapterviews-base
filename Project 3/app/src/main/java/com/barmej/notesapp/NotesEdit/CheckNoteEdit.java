@@ -1,4 +1,4 @@
-package com.barmej.notesapp;
+package com.barmej.notesapp.NotesEdit;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.barmej.notesapp.R;
 import com.barmej.notesapp.classes.CheckNote;
 
 public class CheckNoteEdit extends AppCompatActivity {

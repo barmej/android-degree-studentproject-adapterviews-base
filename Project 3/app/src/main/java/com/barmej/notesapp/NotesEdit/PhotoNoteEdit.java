@@ -1,4 +1,4 @@
-package com.barmej.notesapp;
+package com.barmej.notesapp.NotesEdit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.barmej.notesapp.R;
 import com.barmej.notesapp.classes.PhotoNote;
 
 import java.io.Serializable;
@@ -42,6 +43,7 @@ public class PhotoNoteEdit extends AppCompatActivity {
         constraintLayout = findViewById(R.id.ConstraintLayout);
 
        PhotoNote photoNote = (PhotoNote) getIntent().getSerializableExtra("photoNote");
+        Toast.makeText(this, photoNote.getColor()+"", Toast.LENGTH_SHORT).show();
        photoNoteEditEditText.setText(photoNote.getNote());
        photoNoteEditImageView.setImageURI(photoNote.getImage());
        constraintLayout.setBackgroundColor(photoNote.getColor());
