@@ -14,10 +14,10 @@ import com.barmej.notesapp.R;
 import com.barmej.notesapp.classes.Note;
 
 public class NormalNoteEdit extends AppCompatActivity {
-    EditText normalNoteEditEditText;
-    Button changeBtn;
-    ConstraintLayout constraintLayout;
-    int position;
+    private EditText normalNoteEditEditText;
+    private Button changeBtn;
+    private ConstraintLayout constraintLayout;
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

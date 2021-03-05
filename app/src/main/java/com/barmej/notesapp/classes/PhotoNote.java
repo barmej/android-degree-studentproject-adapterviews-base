@@ -1,5 +1,6 @@
 package com.barmej.notesapp.classes;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -14,6 +15,7 @@ public class PhotoNote extends Note implements Parcelable {
         super(noteColor, note);
         this.image = image;
     }
+
 
     protected PhotoNote(Parcel in) {
         note = in.readString();
@@ -52,4 +54,5 @@ public class PhotoNote extends Note implements Parcelable {
         parcel.writeInt(color);
         parcel.writeParcelable(image, i);
     }
+
 }

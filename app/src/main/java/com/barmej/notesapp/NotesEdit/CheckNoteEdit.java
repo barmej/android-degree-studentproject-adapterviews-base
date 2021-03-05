@@ -13,10 +13,10 @@ import com.barmej.notesapp.R;
 import com.barmej.notesapp.classes.CheckNote;
 
 public class CheckNoteEdit extends AppCompatActivity {
-    EditText checkNoteEditEditText;
-    Button changeBtn;
-    ConstraintLayout constraintLayout;
-    int position;
+    private EditText checkNoteEditEditText;
+    private Button changeBtn;
+    private ConstraintLayout constraintLayout;
+    private int position;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

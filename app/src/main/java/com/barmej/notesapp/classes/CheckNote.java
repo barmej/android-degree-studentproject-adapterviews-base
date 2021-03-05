@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 public class CheckNote extends Note implements Serializable {
 
-    boolean checkBox;
+    private boolean checkBox;
 
     public CheckNote(int noteColor, String note, boolean checkBox) {
         super(noteColor,note);
