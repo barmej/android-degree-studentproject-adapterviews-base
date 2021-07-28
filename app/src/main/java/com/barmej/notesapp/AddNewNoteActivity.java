@@ -2,16 +2,14 @@ package com.barmej.notesapp;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,13 +17,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.ViewModelProviders;
+
+import com.barmej.notesapp.classes.Note;
 
 import java.io.Serializable;
 
 
 public class AddNewNoteActivity extends AppCompatActivity implements Serializable {
+
+
     private static final int PICK_IMAGE = 10;
     private static final int READ_PHOTO_FROM_GALLERY_PERMISSION = 11;
+    private static final int WRITE_PHOTO_FROM_GALLERY_PERMISSION = 11;
     private Uri mSelectedPhotoUri;
 
     private ConstraintLayout constraintLayout;
@@ -51,6 +55,8 @@ public class AddNewNoteActivity extends AppCompatActivity implements Serializabl
     private EditText checkNoteEditText;
 
     private Button addButton;
+
+    private AddNewNoteViewModel mAddNewNoteViewModel;
 
 
     @Override
@@ -171,12 +177,16 @@ public class AddNewNoteActivity extends AppCompatActivity implements Serializabl
             public void onClick(View view)
             {
                 selectPhoto();
+                writePermission();
             }
         });
+
+        mAddNewNoteViewModel = ViewModelProviders.of(this).get(AddNewNoteViewModel.class);
     }
 
     private void submit()
     {
+        saveNote();
         if (imageNoteRadio.isChecked())
         {
             String photoNoteText = photoNoteEditText.getText().toString();
@@ -291,6 +301,15 @@ public class AddNewNoteActivity extends AppCompatActivity implements Serializabl
         }
     }
 
+    private void writePermission(){
+        if (ActivityCompat.checkSelfPermission(this , Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this , new String[]
+                    {Manifest.permission.WRITE_EXTERNAL_STORAGE} , WRITE_PHOTO_FROM_GALLERY_PERMISSION);
+        }
+    }
+
     private void setSelectedPhoto(Uri data)
     {
         imageView.setImageURI(data);
@@ -303,5 +322,17 @@ public class AddNewNoteActivity extends AppCompatActivity implements Serializabl
         intent.setType("image/*");
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         startActivityForResult(Intent.createChooser(intent , getString(R.string.choose_picture) ) , PICK_IMAGE);
+    }
+
+    public void saveNote(){
+        Toast.makeText(this, "Room has been added successfully", Toast.LENGTH_SHORT).show();
+        String normalNoteText = normalNoteEditText.getText().toString();
+
+        Note note = new Note(cardViewColor , normalNoteText);
+        if (normalNoteText.isEmpty()){
+            Toast.makeText(this, "tHiS cAnNoT bE eMpTy", Toast.LENGTH_SHORT).show();
+        }else{
+            mAddNewNoteViewModel.insert(note);
+        }
     }
 }

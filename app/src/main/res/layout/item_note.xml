@@ -12,6 +12,8 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/cairo"
         android:text="Text"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:layout_marginLeft="5dp"
+        android:textColor="#000"/>
 
 </androidx.cardview.widget.CardView>

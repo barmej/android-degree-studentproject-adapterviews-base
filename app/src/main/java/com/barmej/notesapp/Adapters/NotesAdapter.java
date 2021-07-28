@@ -24,15 +24,18 @@ import com.barmej.notesapp.R;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> implements Serializable
 {
 
-    ArrayList<Note> notesArray;
+    private static List<Note> notesArray;
     ItemLongClickListener mItemLongClickListener;
     ItemClickListener mItemClickListener;
 
-    public NotesAdapter(ArrayList<Note> notesList, ItemLongClickListener mItemLongClickListener, ItemClickListener mItemClickListener)
+    public static OnItemClickListener mListener;
+
+    public NotesAdapter(List<Note> notesList, ItemLongClickListener mItemLongClickListener, ItemClickListener mItemClickListener)
     {
         notesArray = notesList;
         this.mItemLongClickListener = mItemLongClickListener;
@@ -120,6 +123,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         holder.position = position;
     }
 
+    public void setWords(List<Note> notes){
+        notesArray = notes;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount()
     {
@@ -155,9 +163,19 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
                 @Override
                 public void onClick(View view)
                 {
+                    int index = getAdapterPosition();
                     mItemClickListener.onClickListener(position);
+                    mItemClickListener.onItemClick(notesArray.get(index));
                 }
             });
+
+//            itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    int index = getAdapterPosition();
+//                    mListener.onItemClick(notesArray.get(index));
+//                }
+//            });
         }
     }
 
@@ -183,5 +201,16 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         }
     }
 
+    public interface OnItemClickListener {
+        void onItemClick(Note note);
+    }
 
+    public void OnItemClickListener(OnItemClickListener listener)
+    {
+        mListener = listener;
+    }
+
+    public Note getNoteAt(int pos){
+        return notesArray.get(pos);
+    }
 }

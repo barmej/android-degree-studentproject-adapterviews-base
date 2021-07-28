@@ -5,14 +5,21 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.room.Entity;
+
 import java.io.Serializable;
 
+@Entity(tableName = "photoNotesTable")
 public class PhotoNote extends Note implements Parcelable {
     private Uri image;
 
 
     public PhotoNote(int noteColor, String note, Uri image) {
         super(noteColor, note);
+        this.image = image;
+    }
+
+    public PhotoNote(Uri image){
         this.image = image;
     }
 

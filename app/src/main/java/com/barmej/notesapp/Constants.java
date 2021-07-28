@@ -10,4 +10,7 @@ public class Constants
     public static final String THE_NOTE = "a";
     public static final String CHECK_BOX_TEXT = null;
     public static final String COLOR = "";
+
+    public static final String EXTRA_ID = "com.barmej.notesapp.extraid";
+    public static final String EXTRA_NOTE_TEXT = "com.barmej.notesapp.text";
 }

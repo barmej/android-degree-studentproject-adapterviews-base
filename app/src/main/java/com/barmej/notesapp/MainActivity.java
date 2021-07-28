@@ -3,6 +3,9 @@ package com.barmej.notesapp;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -26,13 +29,15 @@ import com.barmej.notesapp.classes.PhotoNote;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final ArrayList<Note> notesItems = new ArrayList<>();
+    private final List<Note> notesItems = new ArrayList<>();
     private NotesAdapter mNotesAdapter;
     private static final int RECEIVE_NOTES = 2003;
     private static final int EDIT_NOTES = 1000;
+    private NoteViewModel mNoteViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -55,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2 ,1);
 
 
-
         mNotesAdapter = new NotesAdapter(notesItems, new ItemLongClickListener()
         {
             @Override
@@ -69,7 +73,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClickListener(int position)
             {
-                editNote(position);
+//                editNote(position);
+            }
+
+            @Override
+            public void onItemClick(Note note) {
+                Intent intent = new Intent(MainActivity.this , NormalNoteEdit.class);
+                intent.putExtra(Constants.EXTRA_ID , note.getId());
+                intent.putExtra(Constants.EXTRA_NOTE_TEXT , note.getNote());
+                startActivity(intent);
             }
         });
 
@@ -77,7 +89,13 @@ public class MainActivity extends AppCompatActivity {
         notesRecyclerView.setLayoutManager(staggeredGridLayoutManager);
         notesRecyclerView.addItemDecoration(new ViewSpaces(20));
 
-
+        mNoteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
+        mNoteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
+            @Override
+            public void onChanged(List<Note> notes) {
+                mNotesAdapter.setWords(notes);
+            }
+        });
 
     }
 
@@ -158,6 +176,8 @@ public class MainActivity extends AppCompatActivity {
                     mNotesAdapter.notifyItemChanged(notePosition);
                 }
 
+            }else{
+                Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -172,7 +192,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
-                        notesItems.remove(position);
+                        mNoteViewModel.delete(mNotesAdapter.getNoteAt(position));
+//                        notesItems.remove(position);
                         mNotesAdapter.notifyItemRemoved(position);
                     }
                 })
@@ -214,12 +235,15 @@ public class MainActivity extends AppCompatActivity {
 
         } else
         {
-            Intent normalNoteEdit = new Intent(MainActivity.this , NormalNoteEdit.class);
+//            Intent normalNoteEdit = new Intent(MainActivity.this , NormalNoteEdit.class);
+//
+//            normalNoteEdit.putExtra("Note" ,  noteEdit);
+//            normalNoteEdit.putExtra("Position" , position);
+//
+//            startActivityForResult(normalNoteEdit , EDIT_NOTES);
 
-            normalNoteEdit.putExtra("Note" ,  noteEdit);
-            normalNoteEdit.putExtra("Position" , position);
 
-            startActivityForResult(normalNoteEdit , EDIT_NOTES);
+
         }
     }
 

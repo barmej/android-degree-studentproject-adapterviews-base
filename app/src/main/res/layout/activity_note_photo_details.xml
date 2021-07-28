@@ -18,14 +18,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/photoNoteEditText"
-        android:layout_width="413dp"
+        android:id="@+id/photoNoteEditTextEdit"
+        android:layout_width="0dp"
         android:layout_height="530dp"
         android:fontFamily="@font/cairo"
         android:gravity="top"
         android:hint="@string/add_note_text"
         android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/photoImageView" />
 
     <Button
