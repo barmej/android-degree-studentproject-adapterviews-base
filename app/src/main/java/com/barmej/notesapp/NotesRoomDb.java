@@ -1,7 +1,6 @@
 package com.barmej.notesapp;
 
 import android.content.Context;
-import android.provider.UserDictionary;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
@@ -10,6 +9,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.barmej.notesapp.Daos.NotesDao;
 import com.barmej.notesapp.classes.CheckNote;
 import com.barmej.notesapp.classes.Note;
 import com.barmej.notesapp.classes.PhotoNote;

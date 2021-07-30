@@ -5,13 +5,15 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
+import com.barmej.notesapp.classes.CheckNote;
 import com.barmej.notesapp.classes.Note;
+import com.barmej.notesapp.classes.PhotoNote;
 
-public class AddNewNoteViewModel extends AndroidViewModel {
+public class AddNewNormalNoteViewModel extends AndroidViewModel {
 
     private NotesRepository mNotesRepository;
 
-    public AddNewNoteViewModel(@NonNull Application application){
+    public AddNewNormalNoteViewModel(@NonNull Application application){
         super(application);
 
         mNotesRepository = new NotesRepository(application);
@@ -20,5 +22,6 @@ public class AddNewNoteViewModel extends AndroidViewModel {
     public void insert(Note note){
         mNotesRepository.insert(note);
     }
+
 
 }

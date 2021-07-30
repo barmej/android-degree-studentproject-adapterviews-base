@@ -33,26 +33,22 @@ public class NormalNoteEdit extends AppCompatActivity {
         normalNoteEditEditText = findViewById(R.id.noteEditText);
         changeBtn = findViewById(R.id.changeBtn);
         constraintLayout = findViewById(R.id.ConstraintLayout);
-        Note note = (Note) getIntent().getSerializableExtra("Note");
 
-//        normalNoteEditEditText.setText(note.getNote());
-//        constraintLayout.setBackgroundColor(note.getColor());
-//
-        Bundle positionBundle = getIntent().getExtras();
-        position = positionBundle.getInt(Constants.EXTRA_ID);
+        Bundle bundle = getIntent().getExtras();
+        String bundleNoteText = bundle.getString(Constants.EXTRA_NOTE_TEXT);
+        int bundleNoteColor = bundle.getInt(Constants.COLOR);
+        normalNoteEditEditText.setText(bundleNoteText);
+
+        position = bundle.getInt(Constants.EXTRA_ID);
 
         mEditNormalNoteViewModel = ViewModelProviders.of(NormalNoteEdit.this).get(EditNormalNoteViewModel.class);
 
 
         changeBtn.setOnClickListener(view -> {
             String newText = normalNoteEditEditText.getText().toString();
-            Note noteRoom = new Note(Color.BLUE , newText);
+            Note noteRoom = new Note(bundleNoteColor , newText);
             noteRoom.setId(position);
             mEditNormalNoteViewModel.update(noteRoom);
-//            Intent newIntent = new Intent();
-//            newIntent.putExtra("NewText" , newText);
-//            newIntent.putExtra("Position2" , position);
-//            setResult(RESULT_OK , newIntent);
             finish();
         });
     }

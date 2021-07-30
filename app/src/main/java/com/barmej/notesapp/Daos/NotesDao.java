@@ -1,4 +1,4 @@
-package com.barmej.notesapp;
+package com.barmej.notesapp.Daos;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -8,7 +8,9 @@ import androidx.room.Query;
 import androidx.room.TypeConverters;
 import androidx.room.Update;
 
+import com.barmej.notesapp.NoteConverter;
 import com.barmej.notesapp.classes.Note;
+import com.barmej.notesapp.classes.PhotoNote;
 
 import java.util.ArrayList;
 import java.util.List;

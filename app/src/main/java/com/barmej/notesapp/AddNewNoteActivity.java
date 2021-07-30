@@ -2,7 +2,6 @@ package com.barmej.notesapp;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -19,7 +18,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.barmej.notesapp.classes.CheckNote;
 import com.barmej.notesapp.classes.Note;
+import com.barmej.notesapp.classes.PhotoNote;
 
 import java.io.Serializable;
 
@@ -56,7 +57,7 @@ public class AddNewNoteActivity extends AppCompatActivity implements Serializabl
 
     private Button addButton;
 
-    private AddNewNoteViewModel mAddNewNoteViewModel;
+    private AddNewNormalNoteViewModel mAddNewNoteViewModel;
 
 
     @Override
@@ -167,7 +168,7 @@ public class AddNewNoteActivity extends AppCompatActivity implements Serializabl
             @Override
             public void onClick(View view)
             {
-                submit();
+                saveNote();
             }
         });
 
@@ -181,78 +182,7 @@ public class AddNewNoteActivity extends AppCompatActivity implements Serializabl
             }
         });
 
-        mAddNewNoteViewModel = ViewModelProviders.of(this).get(AddNewNoteViewModel.class);
-    }
-
-    private void submit()
-    {
-        saveNote();
-        if (imageNoteRadio.isChecked())
-        {
-            String photoNoteText = photoNoteEditText.getText().toString();
-
-            if (!photoNoteText.equals(""))
-            {
-                if (mSelectedPhotoUri != null)
-                {
-                    Intent imageNoteIntent = new Intent();
-
-                    imageNoteIntent.putExtra(Constants.EXTRA_PHOTO_URI , mSelectedPhotoUri);
-                    imageNoteIntent.putExtra(Constants.THE_NOTE , photoNoteText);
-                    imageNoteIntent.putExtra(Constants.COLOR, cardViewColor);
-
-                    setResult(RESULT_OK , imageNoteIntent);
-                    finish();
-                }
-                else
-                {
-                    Toast.makeText(this, R.string.didnt_add_photo, Toast.LENGTH_SHORT).show();
-                }
-            }
-            else
-            {
-                Toast.makeText(this, R.string.Must_Enter_Text, Toast.LENGTH_SHORT).show();
-            }
-
-        }
-        else if (checkBoxNoteRadio.isChecked())
-        {
-            String checkBoxText = checkNoteEditText.getText().toString();
-
-            if (!checkBoxText.equals(""))
-            {
-                Intent checkNoteIntent = new Intent();
-
-                checkNoteIntent.putExtra(Constants.CHECK_BOX_TEXT, checkBoxText);
-                checkNoteIntent.putExtra(Constants.COLOR, cardViewColor);
-                setResult(RESULT_OK , checkNoteIntent);
-
-                finish();
-            }
-            else
-            {
-                Toast.makeText(this, "the text is empty", Toast.LENGTH_SHORT).show();
-            }
-        }
-        else if (normalNoteRadio.isChecked())
-        {
-            String normalNoteText = normalNoteEditText.getText().toString();
-
-            if (!normalNoteText.equals(""))
-            {
-                Intent normalNoteIntent = new Intent();
-
-                normalNoteIntent.putExtra(Constants.THE_NOTE , normalNoteText);
-                normalNoteIntent.putExtra(Constants.COLOR, cardViewColor);
-                setResult(RESULT_OK , normalNoteIntent);
-
-                finish();
-            }
-            else
-            {
-                Toast.makeText(this, "the text is empty", Toast.LENGTH_SHORT).show();
-            }
-        }
+        mAddNewNoteViewModel = ViewModelProviders.of(this).get(AddNewNormalNoteViewModel.class);
     }
 
     @Override
@@ -325,14 +255,38 @@ public class AddNewNoteActivity extends AppCompatActivity implements Serializabl
     }
 
     public void saveNote(){
-        Toast.makeText(this, "Room has been added successfully", Toast.LENGTH_SHORT).show();
-        String normalNoteText = normalNoteEditText.getText().toString();
 
-        Note note = new Note(cardViewColor , normalNoteText);
-        if (normalNoteText.isEmpty()){
-            Toast.makeText(this, "tHiS cAnNoT bE eMpTy", Toast.LENGTH_SHORT).show();
+        if (imageNoteRadio.isChecked()){
+            String photoNoteText = photoNoteEditText.getText().toString();
+
+            if (photoNoteText.isEmpty()){
+                Toast.makeText(this, R.string.Must_Enter_Text, Toast.LENGTH_SHORT).show();
+            }else{
+                PhotoNote photoNote = new PhotoNote(cardViewColor , photoNoteText , mSelectedPhotoUri);
+                finish();
+            }
+
+        }else if (checkBoxNoteRadio.isChecked()){
+            String checkBoxText = checkNoteEditText.getText().toString();
+            if (checkBoxText.isEmpty()){
+                Toast.makeText(this, R.string.Must_Enter_Text, Toast.LENGTH_SHORT).show();
+            }else{
+                CheckNote checkNote = new CheckNote(cardViewColor , checkBoxText, false);
+                mAddNewNoteViewModel.insert(checkNote);
+                finish();
+            }
+
         }else{
-            mAddNewNoteViewModel.insert(note);
+            String normalNoteText = normalNoteEditText.getText().toString();
+            if (normalNoteText.isEmpty()){
+                Toast.makeText(this, R.string.Must_Enter_Text, Toast.LENGTH_SHORT).show();
+            }else {
+                Note note = new Note(cardViewColor , normalNoteText);
+                mAddNewNoteViewModel.insert(note);
+                finish();
+            }
         }
+
+
     }
 }

@@ -1,11 +1,13 @@
 package com.barmej.notesapp;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -45,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Toast.makeText(this, notesItems.size()+"", Toast.LENGTH_SHORT).show();
+
         RecyclerView notesRecyclerView = findViewById(R.id.recycler_view_photos);
 
         findViewById(R.id.floating_button_add).setOnClickListener(new View.OnClickListener()
@@ -65,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onLongClickItem(int position)
             {
+                Toast.makeText(MainActivity.this, position+"", Toast.LENGTH_SHORT).show();
                 removeNote(position);
 
             }
@@ -78,10 +83,28 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onItemClick(Note note) {
-                Intent intent = new Intent(MainActivity.this , NormalNoteEdit.class);
-                intent.putExtra(Constants.EXTRA_ID , note.getId());
-                intent.putExtra(Constants.EXTRA_NOTE_TEXT , note.getNote());
-                startActivity(intent);
+                if (note instanceof PhotoNote){
+                    Intent intent = new Intent(MainActivity.this , PhotoNoteEdit.class);
+                    intent.putExtra(Constants.EXTRA_ID , note.getId());
+                    intent.putExtra(Constants.EXTRA_NOTE_TEXT , note.getNote());
+                    intent.putExtra(Constants.COLOR, note.getColor());
+                    startActivity(intent);
+
+                } else if (note instanceof CheckNote){
+                    Intent intent = new Intent(MainActivity.this , CheckNoteEdit.class);
+                    intent.putExtra(Constants.EXTRA_ID , note.getId());
+                    intent.putExtra(Constants.EXTRA_NOTE_TEXT , note.getNote());
+                    intent.putExtra(Constants.COLOR, note.getColor());
+                    startActivity(intent);
+
+                } else {
+                    Intent intent = new Intent(MainActivity.this , NormalNoteEdit.class);
+                    intent.putExtra(Constants.EXTRA_ID , note.getId());
+                    intent.putExtra(Constants.EXTRA_NOTE_TEXT , note.getNote());
+                    intent.putExtra(Constants.COLOR, note.getColor());
+                    startActivity(intent);
+                }
+
             }
         });
 
@@ -97,6 +120,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                mNoteViewModel.delete(mNotesAdapter.getNoteAt(position));
+            }
+        }).attachToRecyclerView(notesRecyclerView);
     }
 
     @Override
@@ -193,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
                         mNoteViewModel.delete(mNotesAdapter.getNoteAt(position));
-//                        notesItems.remove(position);
+                        notesItems.remove(position);
                         mNotesAdapter.notifyItemRemoved(position);
                     }
                 })
@@ -226,25 +261,20 @@ public class MainActivity extends AppCompatActivity {
 
         } else if (noteEdit instanceof CheckNote)
         {
-            Intent checkNoteIntent = new Intent(MainActivity.this , CheckNoteEdit.class);
-
-            checkNoteIntent.putExtra("checkNote" ,  noteEdit);
-            checkNoteIntent.putExtra("Position" , position);
-
-            startActivityForResult(checkNoteIntent , EDIT_NOTES);
+//            Intent intent = new Intent(MainActivity.this , NormalNoteEdit.class);
+//            intent.putExtra(Constants.EXTRA_ID , note.getId());
+//            intent.putExtra(Constants.EXTRA_NOTE_TEXT , note.getNote());
+//            intent.putExtra(Constants.COLOR, note.getColor());
+//            startActivity(intent);
 
         } else
         {
-//            Intent normalNoteEdit = new Intent(MainActivity.this , NormalNoteEdit.class);
-//
-//            normalNoteEdit.putExtra("Note" ,  noteEdit);
-//            normalNoteEdit.putExtra("Position" , position);
-//
-//            startActivityForResult(normalNoteEdit , EDIT_NOTES);
 
 
 
         }
     }
+
+
 
 }

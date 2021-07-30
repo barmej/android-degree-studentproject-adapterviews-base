@@ -5,9 +5,9 @@ import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
 
+import com.barmej.notesapp.Daos.NotesDao;
 import com.barmej.notesapp.classes.Note;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NotesRepository {
@@ -72,4 +72,5 @@ public class NotesRepository {
             return null;
         }
     }
+
 }

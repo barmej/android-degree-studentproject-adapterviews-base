@@ -33,7 +33,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     ItemLongClickListener mItemLongClickListener;
     ItemClickListener mItemClickListener;
 
-    public static OnItemClickListener mListener;
 
     public NotesAdapter(List<Note> notesList, ItemLongClickListener mItemLongClickListener, ItemClickListener mItemClickListener)
     {
@@ -169,13 +168,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
                 }
             });
 
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    int index = getAdapterPosition();
-//                    mListener.onItemClick(notesArray.get(index));
-//                }
-//            });
         }
     }
 
@@ -199,15 +191,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
             checkBox = itemView.findViewById(R.id.checkBox);
             Log.d("" , "");
         }
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(Note note);
-    }
-
-    public void OnItemClickListener(OnItemClickListener listener)
-    {
-        mListener = listener;
     }
 
     public Note getNoteAt(int pos){
