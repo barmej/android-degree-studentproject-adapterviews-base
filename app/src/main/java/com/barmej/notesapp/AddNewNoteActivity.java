@@ -263,6 +263,7 @@ public class AddNewNoteActivity extends AppCompatActivity implements Serializabl
                 Toast.makeText(this, R.string.Must_Enter_Text, Toast.LENGTH_SHORT).show();
             }else{
                 PhotoNote photoNote = new PhotoNote(cardViewColor , photoNoteText , mSelectedPhotoUri);
+                mAddNewNoteViewModel.insertPhotoNote(photoNote);
                 finish();
             }
 
@@ -272,7 +273,7 @@ public class AddNewNoteActivity extends AppCompatActivity implements Serializabl
                 Toast.makeText(this, R.string.Must_Enter_Text, Toast.LENGTH_SHORT).show();
             }else{
                 CheckNote checkNote = new CheckNote(cardViewColor , checkBoxText, false);
-                mAddNewNoteViewModel.insert(checkNote);
+                mAddNewNoteViewModel.insertNote(checkNote);
                 finish();
             }
 
@@ -282,7 +283,7 @@ public class AddNewNoteActivity extends AppCompatActivity implements Serializabl
                 Toast.makeText(this, R.string.Must_Enter_Text, Toast.LENGTH_SHORT).show();
             }else {
                 Note note = new Note(cardViewColor , normalNoteText);
-                mAddNewNoteViewModel.insert(note);
+                mAddNewNoteViewModel.insertNote(note);
                 finish();
             }
         }

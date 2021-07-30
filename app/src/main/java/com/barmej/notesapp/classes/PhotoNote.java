@@ -6,11 +6,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 
 @Entity(tableName = "photoNotesTable")
 public class PhotoNote extends Note implements Parcelable {
+    @PrimaryKey(autoGenerate = true)
+    private int id;
     private Uri image;
 
 

@@ -12,22 +12,21 @@ import com.barmej.notesapp.NoteConverter;
 import com.barmej.notesapp.classes.Note;
 import com.barmej.notesapp.classes.PhotoNote;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Dao
 @TypeConverters(NoteConverter.class)
-public interface NotesDao {
+public interface PhotoNoteDao {
 
     @Insert
-    void insert(Note note);
+    void insert(PhotoNote photoNote);
 
     @Update
-    void update(Note note);
+    void update(PhotoNote photoNote);
 
     @Delete
-    void delete(Note note);
+    void delete(PhotoNote photoNote);
 
-    @Query("SELECT * FROM notesTable")
-    LiveData<List<Note>> getAllNotes();
+    @Query("SELECT * FROM photoNotesTable")
+    LiveData<List<Note>> getAllPhotoNotes();
 }

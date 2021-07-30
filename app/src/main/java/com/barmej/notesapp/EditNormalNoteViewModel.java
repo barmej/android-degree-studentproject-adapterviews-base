@@ -9,15 +9,15 @@ import com.barmej.notesapp.classes.Note;
 
 public class EditNormalNoteViewModel extends AndroidViewModel {
 
-    private NotesRepository mNotesRepository;
+    private NoteRepository mNotesRepository;
 
     public EditNormalNoteViewModel(@NonNull Application application) {
         super(application);
 
-        mNotesRepository = new NotesRepository(application);
+        mNotesRepository = new NoteRepository(application);
     }
 
     public void update(Note note){
-        mNotesRepository.update(note);
+        mNotesRepository.updateNote(note);
     }
 }

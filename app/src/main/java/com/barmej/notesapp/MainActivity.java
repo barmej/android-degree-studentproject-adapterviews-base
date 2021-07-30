@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,8 +12,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -22,24 +19,23 @@ import android.widget.Toast;
 import com.barmej.notesapp.Adapters.NotesAdapter;
 import com.barmej.notesapp.Listener.ItemClickListener;
 import com.barmej.notesapp.Listener.ItemLongClickListener;
-import com.barmej.notesapp.NotesEdit.CheckNoteEdit;
-import com.barmej.notesapp.NotesEdit.NormalNoteEdit;
 import com.barmej.notesapp.NotesEdit.PhotoNoteEdit;
 import com.barmej.notesapp.classes.CheckNote;
 import com.barmej.notesapp.classes.Note;
 import com.barmej.notesapp.classes.PhotoNote;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final List<Note> notesItems = new ArrayList<>();
+    private List<Note> notesItems = new ArrayList<>();
     private NotesAdapter mNotesAdapter;
     private static final int RECEIVE_NOTES = 2003;
     private static final int EDIT_NOTES = 1000;
     private NoteViewModel mNoteViewModel;
+    private PhotoNoteViewModel mPhotoNoteViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -83,27 +79,27 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onItemClick(Note note) {
-                if (note instanceof PhotoNote){
-                    Intent intent = new Intent(MainActivity.this , PhotoNoteEdit.class);
-                    intent.putExtra(Constants.EXTRA_ID , note.getId());
-                    intent.putExtra(Constants.EXTRA_NOTE_TEXT , note.getNote());
-                    intent.putExtra(Constants.COLOR, note.getColor());
-                    startActivity(intent);
-
-                } else if (note instanceof CheckNote){
-                    Intent intent = new Intent(MainActivity.this , CheckNoteEdit.class);
-                    intent.putExtra(Constants.EXTRA_ID , note.getId());
-                    intent.putExtra(Constants.EXTRA_NOTE_TEXT , note.getNote());
-                    intent.putExtra(Constants.COLOR, note.getColor());
-                    startActivity(intent);
-
-                } else {
-                    Intent intent = new Intent(MainActivity.this , NormalNoteEdit.class);
-                    intent.putExtra(Constants.EXTRA_ID , note.getId());
-                    intent.putExtra(Constants.EXTRA_NOTE_TEXT , note.getNote());
-                    intent.putExtra(Constants.COLOR, note.getColor());
-                    startActivity(intent);
-                }
+//                if (note instanceof PhotoNote){
+//                    Intent intent = new Intent(MainActivity.this , PhotoNoteEdit.class);
+//                    intent.putExtra(Constants.EXTRA_ID , note.getId());
+//                    intent.putExtra(Constants.EXTRA_NOTE_TEXT , note.getNote());
+//                    intent.putExtra(Constants.COLOR, note.getColor());
+//                    startActivity(intent);
+//
+//                } else if (note instanceof CheckNote){
+//                    Intent intent = new Intent(MainActivity.this , CheckNoteEdit.class);
+//                    intent.putExtra(Constants.EXTRA_ID , note.getId());
+//                    intent.putExtra(Constants.EXTRA_NOTE_TEXT , note.getNote());
+//                    intent.putExtra(Constants.COLOR, note.getColor());
+//                    startActivity(intent);
+//
+//                } else {
+//                    Intent intent = new Intent(MainActivity.this , NormalNoteEdit.class);
+//                    intent.putExtra(Constants.EXTRA_ID , note.getId());
+//                    intent.putExtra(Constants.EXTRA_NOTE_TEXT , note.getNote());
+//                    intent.putExtra(Constants.COLOR, note.getColor());
+//                    startActivity(intent);
+//                }
 
             }
         });
@@ -113,12 +109,21 @@ public class MainActivity extends AppCompatActivity {
         notesRecyclerView.addItemDecoration(new ViewSpaces(20));
 
         mNoteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
+        mPhotoNoteViewModel = ViewModelProviders.of(this).get(PhotoNoteViewModel.class);
         mNoteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
-                mNotesAdapter.setWords(notes);
+                mNotesAdapter.setNormalNotes(notes);
             }
         });
+        mPhotoNoteViewModel.getAllPhotoNotes().observe(this, new Observer<List<PhotoNote>>() {
+            @Override
+            public void onChanged(List<PhotoNote> photoNotes) {
+                notesItems = photoNotes
+            }
+        });
+
+
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -129,7 +134,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
-                mNoteViewModel.delete(mNotesAdapter.getNoteAt(position));
+                if (mNotesAdapter.getNoteAt(position) instanceof PhotoNote){
+                    mPhotoNoteViewModel.deletePhotoNote((PhotoNote) mNotesAdapter.getNoteAt(position));
+                    mNotesAdapter.notifyItemRemoved(position);
+                    notesItems.remove(position);
+                    Toast.makeText(MainActivity.this, "This was a PhotoNote", Toast.LENGTH_SHORT).show();
+                }else{
+                    mNoteViewModel.deleteNormalNote(mNotesAdapter.getNoteAt(position));
+                    notesItems.remove(position);
+                    Toast.makeText(MainActivity.this, "This was a NormalNote", Toast.LENGTH_SHORT).show();
+                    mNotesAdapter.notifyItemRemoved(position);
+                }
             }
         }).attachToRecyclerView(notesRecyclerView);
     }
@@ -139,86 +154,86 @@ public class MainActivity extends AppCompatActivity {
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RECEIVE_NOTES)
-        {
-            if (resultCode == RESULT_OK && data != null)
-            {
-                Uri photoUri = data.getParcelableExtra(Constants.EXTRA_PHOTO_URI);
-
-                String NoteCallBack = data.getStringExtra(Constants.THE_NOTE);
-
-                String checkBoxCallBack = data.getStringExtra(Constants.CHECK_BOX_TEXT);
-
-                int color = data.getIntExtra(Constants.COLOR , 1);
-
-                if (photoUri != null)
-                {
-                    PhotoNote photoNote = new PhotoNote(color ,NoteCallBack , photoUri);
-                    notesItems.add(photoNote);
-                    mNotesAdapter.notifyItemInserted(notesItems.size());
-                }
-
-                else if (checkBoxCallBack != null)
-                {
-                    CheckNote checkNote = new CheckNote(color ,checkBoxCallBack, false);
-                    notesItems.add(checkNote);
-                    mNotesAdapter.notifyItemInserted(notesItems.size());
-                }
-
-                else
-                {
-                    Note note1 = new Note(color, NoteCallBack);
-                    notesItems.add(note1);
-                    mNotesAdapter.notifyItemInserted(notesItems.size());
-
-                }
-
-            }
-            else
-            {
-                Toast.makeText(this, R.string.didnt_add_photo , Toast.LENGTH_SHORT).show();
-            }
-        }
-        else if (requestCode == EDIT_NOTES)
-        {
-            if (resultCode == RESULT_OK)
-            {
-                Bundle bundle = data.getExtras();
-                int notePosition = bundle.getInt("Position2");
-                Note note = notesItems.get(notePosition);
-
-                String newTextCallBack = bundle.getString("NewText");
-                String newTextPhotoCallBack = bundle.getString("NewTextPhoto");
-
-                Uri photoNoteImage = bundle.getParcelable("Photo");
-
-                if (note instanceof CheckNote)
-                {
-                    note.setNote(newTextCallBack);
-                    mNotesAdapter.notifyItemChanged(notePosition);
-                }
-                else if (note instanceof PhotoNote)
-                {
-                    PhotoNote photoNote = (PhotoNote) note;
-                    photoNote.setImage(photoNoteImage);
-                    photoNote.setNote(newTextPhotoCallBack);
-                    photoNote.setImage(photoNoteImage);
-                    mNotesAdapter.notifyItemChanged(notePosition);
-                }
-                else
-                {
-                    note.setNote(newTextCallBack);
-                    mNotesAdapter.notifyItemChanged(notePosition);
-                }
-
-            }else{
-                Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
-            }
-        }
+//        if (requestCode == RECEIVE_NOTES)
+//        {
+//            if (resultCode == RESULT_OK && data != null)
+//            {
+//                Uri photoUri = data.getParcelableExtra(Constants.EXTRA_PHOTO_URI);
+//
+//                String NoteCallBack = data.getStringExtra(Constants.THE_NOTE);
+//
+//                String checkBoxCallBack = data.getStringExtra(Constants.CHECK_BOX_TEXT);
+//
+//                int color = data.getIntExtra(Constants.COLOR , 1);
+//
+//                if (photoUri != null)
+//                {
+//                    PhotoNote photoNote = new PhotoNote(color ,NoteCallBack , photoUri);
+//                    notesItems.add(photoNote);
+//                    mNotesAdapter.notifyItemInserted(notesItems.size());
+//                }
+//
+//                else if (checkBoxCallBack != null)
+//                {
+//                    CheckNote checkNote = new CheckNote(color ,checkBoxCallBack, false);
+//                    notesItems.add(checkNote);
+//                    mNotesAdapter.notifyItemInserted(notesItems.size());
+//                }
+//
+//                else
+//                {
+//                    Note note1 = new Note(color, NoteCallBack);
+//                    notesItems.add(note1);
+//                    mNotesAdapter.notifyItemInserted(notesItems.size());
+//
+//                }
+//
+//            }
+//            else
+//            {
+//                Toast.makeText(this, R.string.something_happened , Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//        else if (requestCode == EDIT_NOTES)
+//        {
+//            if (resultCode == RESULT_OK)
+//            {
+//                Bundle bundle = data.getExtras();
+//                int notePosition = bundle.getInt("Position2");
+//                Note note = notesItems.get(notePosition);
+//
+//                String newTextCallBack = bundle.getString("NewText");
+//                String newTextPhotoCallBack = bundle.getString("NewTextPhoto");
+//
+//                Uri photoNoteImage = bundle.getParcelable("Photo");
+//
+//                if (note instanceof CheckNote)
+//                {
+//                    note.setNote(newTextCallBack);
+//                    mNotesAdapter.notifyItemChanged(notePosition);
+//                }
+//                else if (note instanceof PhotoNote)
+//                {
+//                    PhotoNote photoNote = (PhotoNote) note;
+//                    photoNote.setImage(photoNoteImage);
+//                    photoNote.setNote(newTextPhotoCallBack);
+//                    photoNote.setImage(photoNoteImage);
+//                    mNotesAdapter.notifyItemChanged(notePosition);
+//                }
+//                else
+//                {
+//                    note.setNote(newTextCallBack);
+//                    mNotesAdapter.notifyItemChanged(notePosition);
+//                }
+//
+//            }else{
+//                Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+//            }
+//        }
     }
 
-    private void removeNote(final int position)
-    {
+    private void removeNote(final int position) {
+
         AlertDialog alertDialog = new AlertDialog.Builder(this )
                 .setMessage(R.string.delete_confirmation)
 
@@ -227,9 +242,17 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
-                        mNoteViewModel.delete(mNotesAdapter.getNoteAt(position));
-                        notesItems.remove(position);
-                        mNotesAdapter.notifyItemRemoved(position);
+                        if (mNotesAdapter.getNoteAt(position) instanceof PhotoNote){
+                            mPhotoNoteViewModel.deletePhotoNote((PhotoNote) mNotesAdapter.getNoteAt(position));
+                            mNotesAdapter.notifyItemRemoved(position);
+                            Toast.makeText(MainActivity.this, "This was a PhotoNote", Toast.LENGTH_SHORT).show();
+                        }else{
+                            mNoteViewModel.deleteNormalNote(mNotesAdapter.getNoteAt(position));
+                            notesItems.remove(position);
+                            Toast.makeText(MainActivity.this, "This was a NormalNote", Toast.LENGTH_SHORT).show();
+                            mNotesAdapter.notifyItemRemoved(position);
+                        }
+
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
@@ -269,8 +292,6 @@ public class MainActivity extends AppCompatActivity {
 
         } else
         {
-
-
 
         }
     }

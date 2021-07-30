@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.barmej.notesapp.AddNewNoteActivity;
 import com.barmej.notesapp.Constants;
 import com.barmej.notesapp.Listener.ItemClickListener;
 import com.barmej.notesapp.Listener.ItemLongClickListener;
@@ -122,10 +123,12 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         holder.position = position;
     }
 
-    public void setWords(List<Note> notes){
+
+    public void setNormalNotes(List<Note> notes){
         notesArray = notes;
         notifyDataSetChanged();
     }
+
 
     @Override
     public int getItemCount()
