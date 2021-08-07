@@ -1,4 +1,4 @@
-package com.barmej.notesapp;
+package com.barmej.notesapp.extra;
 
 public class Constants
 {

@@ -15,8 +15,8 @@
         <activity android:name=".NotesEdit.NormalNoteEdit"></activity>
         <activity android:name=".NotesEdit.CheckNoteEdit" />
         <activity android:name=".NotesEdit.PhotoNoteEdit" />
-        <activity android:name=".AddNewNoteActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.AddNewNoteActivity" />
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

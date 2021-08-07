@@ -1,4 +1,4 @@
-package com.barmej.notesapp;
+package com.barmej.notesapp.extra;
 
 import android.graphics.Rect;
 import android.view.View;

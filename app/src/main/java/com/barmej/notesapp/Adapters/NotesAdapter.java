@@ -1,6 +1,5 @@
 package com.barmej.notesapp.Adapters;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,13 +8,11 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.barmej.notesapp.AddNewNoteActivity;
-import com.barmej.notesapp.Constants;
+import com.barmej.notesapp.extra.Constants;
 import com.barmej.notesapp.Listener.ItemClickListener;
 import com.barmej.notesapp.Listener.ItemLongClickListener;
 import com.barmej.notesapp.classes.CheckNote;
@@ -24,7 +21,6 @@ import com.barmej.notesapp.classes.PhotoNote;
 import com.barmej.notesapp.R;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> implements Serializable

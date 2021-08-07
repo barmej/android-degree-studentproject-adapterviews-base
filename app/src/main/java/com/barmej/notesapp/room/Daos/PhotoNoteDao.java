@@ -1,4 +1,4 @@
-package com.barmej.notesapp.Daos;
+package com.barmej.notesapp.room.Daos;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -8,8 +8,7 @@ import androidx.room.Query;
 import androidx.room.TypeConverters;
 import androidx.room.Update;
 
-import com.barmej.notesapp.NoteConverter;
-import com.barmej.notesapp.classes.Note;
+import com.barmej.notesapp.room.NoteConverter;
 import com.barmej.notesapp.classes.PhotoNote;
 
 import java.util.List;
@@ -28,5 +27,5 @@ public interface PhotoNoteDao {
     void delete(PhotoNote photoNote);
 
     @Query("SELECT * FROM photoNotesTable")
-    LiveData<List<Note>> getAllPhotoNotes();
+    LiveData<List<PhotoNote>> getAllPhotoNotes();
 }

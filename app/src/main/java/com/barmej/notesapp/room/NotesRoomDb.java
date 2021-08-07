@@ -1,4 +1,4 @@
-package com.barmej.notesapp;
+package com.barmej.notesapp.room;
 
 import android.content.Context;
 
@@ -9,13 +9,13 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.barmej.notesapp.Daos.NoteDao;
-import com.barmej.notesapp.Daos.PhotoNoteDao;
+import com.barmej.notesapp.room.Daos.NoteDao;
+import com.barmej.notesapp.room.Daos.PhotoNoteDao;
 import com.barmej.notesapp.classes.CheckNote;
 import com.barmej.notesapp.classes.Note;
 import com.barmej.notesapp.classes.PhotoNote;
 
-@Database(entities = {Note.class, PhotoNote.class, CheckNote.class}, version = 1)
+@Database(entities = {Note.class, PhotoNote.class, CheckNote.class}, version = 2)
 @TypeConverters(NoteConverter.class)
 public abstract class NotesRoomDb extends RoomDatabase {
     private static NotesRoomDb instance;

@@ -1,18 +1,18 @@
-package com.barmej.notesapp.Daos;
+package com.barmej.notesapp.room.Daos;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.TypeConverters;
 import androidx.room.Update;
 
-import com.barmej.notesapp.NoteConverter;
+import com.barmej.notesapp.classes.AllNotes;
+import com.barmej.notesapp.room.NoteConverter;
 import com.barmej.notesapp.classes.Note;
-import com.barmej.notesapp.classes.PhotoNote;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Dao
@@ -27,6 +27,10 @@ public interface NoteDao {
 
     @Delete
     void delete(Note note);
+
+    @Transaction
+    @Query("SELECT * FROM notesTable")
+    public LiveData<List<AllNotes>> getAllTypesNotes();
 
     @Query("SELECT * FROM notesTable")
     LiveData<List<Note>> getAllNotes();

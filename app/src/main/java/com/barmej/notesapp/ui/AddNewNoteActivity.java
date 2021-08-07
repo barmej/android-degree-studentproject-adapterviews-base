@@ -1,4 +1,4 @@
-package com.barmej.notesapp;
+package com.barmej.notesapp.ui;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -18,6 +18,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.barmej.notesapp.R;
+import com.barmej.notesapp.room.ViewModels.AddNewNormalNoteViewModel;
 import com.barmej.notesapp.classes.CheckNote;
 import com.barmej.notesapp.classes.Note;
 import com.barmej.notesapp.classes.PhotoNote;
@@ -273,7 +275,7 @@ public class AddNewNoteActivity extends AppCompatActivity implements Serializabl
                 Toast.makeText(this, R.string.Must_Enter_Text, Toast.LENGTH_SHORT).show();
             }else{
                 CheckNote checkNote = new CheckNote(cardViewColor , checkBoxText, false);
-                mAddNewNoteViewModel.insertNote(checkNote);
+                mAddNewNoteViewModel.insert(checkNote);
                 finish();
             }
 
@@ -283,7 +285,7 @@ public class AddNewNoteActivity extends AppCompatActivity implements Serializabl
                 Toast.makeText(this, R.string.Must_Enter_Text, Toast.LENGTH_SHORT).show();
             }else {
                 Note note = new Note(cardViewColor , normalNoteText);
-                mAddNewNoteViewModel.insertNote(note);
+                mAddNewNoteViewModel.insert(note);
                 finish();
             }
         }

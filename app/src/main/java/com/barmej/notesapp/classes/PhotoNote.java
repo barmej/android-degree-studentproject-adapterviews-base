@@ -12,9 +12,9 @@ import java.io.Serializable;
 
 @Entity(tableName = "photoNotesTable")
 public class PhotoNote extends Note implements Parcelable {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
+    public long NoteId;
     private Uri image;
+
 
 
     public PhotoNote(int noteColor, String note, Uri image) {

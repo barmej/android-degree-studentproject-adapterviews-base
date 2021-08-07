@@ -1,4 +1,4 @@
-package com.barmej.notesapp;
+package com.barmej.notesapp.room;
 
 import android.net.Uri;
 

@@ -2,6 +2,7 @@ package com.barmej.notesapp.classes;
 
 import androidx.cardview.widget.CardView;
 import androidx.room.ColumnInfo;
+import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -14,6 +15,10 @@ public class Note implements Serializable {
     @ColumnInfo(name = "color")
     protected int color;
     protected String note;
+//    @Embedded
+//    public PhotoNote photoNote;
+//    @Embedded
+//    public CheckNote checkNote;
 
     public Note(int noteColor, String note) {
         this.color = noteColor;
