@@ -121,13 +121,15 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
 
     public void setNormalNotes(List<Note> notes){
-       notesArray = notes;
+        notesArray = notes;
        notifyDataSetChanged();
     }
 
     public void setPhotoNotes(List<PhotoNote> photoNotes){
-        notesArray.clear();
-        notesArray.addAll(photoNotes);
+        if (notesArray != null){
+            notesArray.clear();
+            notesArray.addAll(photoNotes);
+        }
         notifyDataSetChanged();
     }
 

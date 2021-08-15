@@ -122,8 +122,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -158,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
                 notesItems = notes;
             }
         });
+
 
 //        if (requestCode == RECEIVE_NOTES)
 //        {
@@ -280,9 +279,6 @@ public class MainActivity extends AppCompatActivity {
             Intent photoNoteIntent = new Intent(MainActivity.this, PhotoNoteEdit.class);
             photoNoteIntent.putExtra("photoNote", (Parcelable) photoNote);
             photoNoteIntent.putExtra(Constants.EXTRA_ID, photoNote.getId());
-//            photoNoteIntent.putExtra(Constants.EXTRA_NOTE_TEXT, photoNote.getNote());
-//            photoNoteIntent.putExtra(Constants.COLOR, photoNote.getColor());
-//            photoNoteIntent.putExtra(Constants.EXTRA_PHOTO_URI, photoNote.getImage());
             startActivity(photoNoteIntent);
 
         } else if (noteEdit instanceof CheckNote) {

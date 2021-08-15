@@ -33,8 +33,8 @@ public class NoteRepository {
         mPhotoNoteDao = db.photoNoteDao();
         mCheckNoteDao = db.checkNoteDao();
         getAllNotes = mNoteDao.getAllNotes();
-        getAllPhotoNotes = mPhotoNoteDao.getAllPhotoNotes();
-        getAllCheckNotes = mCheckNoteDao.getAllCheckNotes();
+        getAllPhotoNotes = mNoteDao.getAllPhotoNotes();
+        getAllCheckNotes = mNoteDao.getAllCheckNotes();
     }
 
 
