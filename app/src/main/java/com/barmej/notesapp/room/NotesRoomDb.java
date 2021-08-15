@@ -9,6 +9,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.barmej.notesapp.room.Daos.CheckNoteDao;
 import com.barmej.notesapp.room.Daos.NoteDao;
 import com.barmej.notesapp.room.Daos.PhotoNoteDao;
 import com.barmej.notesapp.classes.CheckNote;
@@ -22,6 +23,7 @@ public abstract class NotesRoomDb extends RoomDatabase {
     private static final String DATABASE_NAME = "notes-database";
     public abstract NoteDao noteDao();
     public abstract PhotoNoteDao photoNoteDao();
+    public abstract CheckNoteDao checkNoteDao();
 
     public static synchronized NotesRoomDb getInstance(Context context){
         if (instance == null){

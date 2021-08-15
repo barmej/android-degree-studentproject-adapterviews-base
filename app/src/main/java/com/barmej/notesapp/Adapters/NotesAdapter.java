@@ -27,14 +27,13 @@ import java.util.List;
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> implements Serializable
 {
 
-    private List<Note> notesArray;
+    public List<Note> notesArray;
     ItemLongClickListener mItemLongClickListener;
     ItemClickListener mItemClickListener;
 
 
-    public NotesAdapter(List<Note> notesList, ItemLongClickListener mItemLongClickListener, ItemClickListener mItemClickListener)
+    public NotesAdapter(ItemLongClickListener mItemLongClickListener, ItemClickListener mItemClickListener)
     {
-        notesArray = notesList;
         this.mItemLongClickListener = mItemLongClickListener;
         this.mItemClickListener = mItemClickListener;
 
@@ -122,8 +121,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
 
     public void setNormalNotes(List<Note> notes){
-        notesArray.clear();
-       notesArray.addAll(notes);
+       notesArray = notes;
        notifyDataSetChanged();
     }
 
@@ -137,7 +135,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     @Override
     public int getItemCount()
     {
-        return notesArray.size();
+        if (notesArray == null){
+            return 0;
+        }else{
+            return notesArray.size();
+        }
 
     }
 

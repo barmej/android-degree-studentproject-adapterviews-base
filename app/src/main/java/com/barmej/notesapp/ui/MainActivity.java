@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.Toast;
 
@@ -38,7 +39,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private List<Note> notesItems = new ArrayList<>();
-    private List<PhotoNote> photoNotesItems = new ArrayList<>();
     private NotesAdapter mNotesAdapter;
     private static final int RECEIVE_NOTES = 2003;
     private static final int EDIT_NOTES = 1000;
@@ -49,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Toast.makeText(this, notesItems.size()+"", Toast.LENGTH_SHORT).show();
 
         RecyclerView notesRecyclerView = findViewById(R.id.recycler_view_photos);
 
@@ -67,12 +65,11 @@ public class MainActivity extends AppCompatActivity {
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2 ,1);
 
 
-        mNotesAdapter = new NotesAdapter(notesItems, new ItemLongClickListener()
+        mNotesAdapter = new NotesAdapter(new ItemLongClickListener()
         {
             @Override
             public void onLongClickItem(int position)
             {
-                Toast.makeText(MainActivity.this, position+" " + notesItems.size(), Toast.LENGTH_SHORT).show();
                 removeNote(position);
 
             }
@@ -81,14 +78,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClickListener(int position)
             {
-//                mNoteViewModel.deleteAll();
-
+                editNote(position);
             }
 
             @Override
             public void onItemClick(Note note) {
-                mNoteViewModel.deleteAll();
-                notesItems.clear();
                /* if (note instanceof PhotoNote){
                     Intent intent = new Intent(MainActivity.this , PhotoNoteEdit.class);
                     intent.putExtra(Constants.EXTRA_ID , note.getId());
@@ -117,20 +111,12 @@ public class MainActivity extends AppCompatActivity {
         notesRecyclerView.setAdapter(mNotesAdapter);
         notesRecyclerView.setLayoutManager(staggeredGridLayoutManager);
         notesRecyclerView.addItemDecoration(new ViewSpaces(20));
+
         mNoteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
-        mNoteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
+        mNoteViewModel.getAllNotesMerged().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
                 mNotesAdapter.setNormalNotes(notes);
-            }
-        });
-
-        mNoteViewModel.getAllPhotoNotes().observe(this, new Observer<List<PhotoNote>>() {
-            @Override
-            public void onChanged(List<PhotoNote> photoNotes) {
-                photoNotesItems = photoNotes;
-                mNotesAdapter.setPhotoNotes(photoNotesItems);
-
             }
         });
 
@@ -148,15 +134,14 @@ public class MainActivity extends AppCompatActivity {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
                 if (mNotesAdapter.getNoteAt(position) instanceof PhotoNote){
-                    mNotesAdapter.notifyItemRemoved(position);
-//                    notesItems.remove(position);
-                    Toast.makeText(MainActivity.this, "This was a PhotoNote", Toast.LENGTH_SHORT).show();
+                    mNoteViewModel.deletePhotoNote((PhotoNote) mNotesAdapter.getNoteAt(position));
+                }else if (mNotesAdapter.getNoteAt(position) instanceof CheckNote){
+                    mNoteViewModel.deleteCheckNote((CheckNote) mNotesAdapter.getNoteAt(position));
                 }else{
                     mNoteViewModel.deleteNormalNote(mNotesAdapter.getNoteAt(position));
-//                    notesItems.remove(position);
-                    Toast.makeText(MainActivity.this, "This was a NormalNote", Toast.LENGTH_SHORT).show();
-                    mNotesAdapter.notifyItemRemoved(position);
+
                 }
+                mNotesAdapter.notifyItemRemoved(position);
             }
         }).attachToRecyclerView(notesRecyclerView);
     }
@@ -166,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-        mNoteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
+        mNoteViewModel.getAllNotesMerged().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
                 mNotesAdapter.setNormalNotes(notes);
@@ -263,14 +248,13 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
                         if (mNotesAdapter.getNoteAt(position) instanceof PhotoNote){
-                            mNotesAdapter.notifyItemRemoved(position);
-                            Toast.makeText(MainActivity.this, "This was a PhotoNote", Toast.LENGTH_SHORT).show();
+                            mNoteViewModel.deletePhotoNote((PhotoNote) mNotesAdapter.getNoteAt(position));
+                        }else if (mNotesAdapter.getNoteAt(position) instanceof CheckNote){
+                            mNoteViewModel.deleteCheckNote((CheckNote) mNotesAdapter.getNoteAt(position));
                         }else{
                             mNoteViewModel.deleteNormalNote(mNotesAdapter.getNoteAt(position));
-//                            notesItems.remove(position);
-                            Toast.makeText(MainActivity.this, "This was a NormalNote", Toast.LENGTH_SHORT).show();
-                            mNotesAdapter.notifyItemRemoved(position);
                         }
+                        mNotesAdapter.notifyItemRemoved(position);
 
                     }
                 })
@@ -288,31 +272,36 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    private void editNote(int position)
-//    {
-//        Note noteEdit = notesItems.get(position);
-//
-//        if (noteEdit instanceof PhotoNote)
-//        {
-//            Intent photoNoteIntent = new Intent(MainActivity.this , PhotoNoteEdit.class);
-//
-//            photoNoteIntent.putExtra("photoNote" , noteEdit);
-//            photoNoteIntent.putExtra("Position" , position);
-//
-//            startActivityForResult( photoNoteIntent,EDIT_NOTES );
-//
-//        } else if (noteEdit instanceof CheckNote)
-//        {
-////            Intent intent = new Intent(MainActivity.this , NormalNoteEdit.class);
-////            intent.putExtra(Constants.EXTRA_ID , note.getId());
-////            intent.putExtra(Constants.EXTRA_NOTE_TEXT , note.getNote());
-////            intent.putExtra(Constants.COLOR, note.getColor());
-////            startActivity(intent);
-//
-//        } else
-//        {
-//
+    private void editNote(int position) {
+        Note noteEdit = notesItems.get(position);
 
+        if (noteEdit instanceof PhotoNote) {
+            PhotoNote photoNote = (PhotoNote) noteEdit;
+            Intent photoNoteIntent = new Intent(MainActivity.this, PhotoNoteEdit.class);
+            photoNoteIntent.putExtra("photoNote", (Parcelable) photoNote);
+            photoNoteIntent.putExtra(Constants.EXTRA_ID, photoNote.getId());
+//            photoNoteIntent.putExtra(Constants.EXTRA_NOTE_TEXT, photoNote.getNote());
+//            photoNoteIntent.putExtra(Constants.COLOR, photoNote.getColor());
+//            photoNoteIntent.putExtra(Constants.EXTRA_PHOTO_URI, photoNote.getImage());
+            startActivity(photoNoteIntent);
+
+        } else if (noteEdit instanceof CheckNote) {
+            CheckNote checkNote = (CheckNote) noteEdit;
+            Intent intent = new Intent(MainActivity.this, CheckNoteEdit.class);
+            intent.putExtra(Constants.EXTRA_ID, checkNote.getId());
+            intent.putExtra(Constants.EXTRA_NOTE_TEXT, checkNote.getNote());
+            intent.putExtra(Constants.COLOR, checkNote.getColor());
+            intent.putExtra("CheckBox status", checkNote.getCheckBox());
+            startActivity(intent);
+
+        } else {
+            Intent intent = new Intent(MainActivity.this, NormalNoteEdit.class);
+            intent.putExtra(Constants.EXTRA_ID, noteEdit.getId());
+            intent.putExtra(Constants.EXTRA_NOTE_TEXT, noteEdit.getNote());
+            intent.putExtra(Constants.COLOR, noteEdit.getColor());
+            startActivity(intent);
+        }
+    }
 
 
 }

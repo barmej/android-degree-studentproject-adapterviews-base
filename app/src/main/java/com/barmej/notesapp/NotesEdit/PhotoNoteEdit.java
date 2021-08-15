@@ -3,6 +3,7 @@ package com.barmej.notesapp.NotesEdit;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +22,8 @@ import android.widget.Toast;
 
 import com.barmej.notesapp.R;
 import com.barmej.notesapp.classes.PhotoNote;
+import com.barmej.notesapp.extra.Constants;
+import com.barmej.notesapp.room.ViewModels.NoteViewModel;
 
 import java.io.ByteArrayOutputStream;
 
@@ -35,6 +38,7 @@ public class PhotoNoteEdit extends AppCompatActivity {
     private ConstraintLayout constraintLayout;
     private int Position;
     public String newText;
+    private NoteViewModel mNoteViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,12 +50,15 @@ public class PhotoNoteEdit extends AppCompatActivity {
         constraintLayout = findViewById(R.id.ConstraintLayout);
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
         PhotoNote photoNote = (PhotoNote) getIntent().getSerializableExtra("photoNote");
+        Bundle bundle = getIntent().getExtras();
+
+        String photoNoteText = bundle.getString(Constants.EXTRA_NOTE_TEXT);
 
         photoNoteEditEditText.setText(photoNote.getNote());
         photoNoteEditImageView.setImageURI(photoNote.getImage());
         constraintLayout.setBackgroundColor(photoNote.getColor());
-        Position = getIntent().getExtras().getInt("Position");
-        System.out.println(Position);
+        Position = bundle.getInt(Constants.EXTRA_ID);
+        mNoteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
 
         photoNoteEditImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,21 +73,24 @@ public class PhotoNoteEdit extends AppCompatActivity {
             public void onClick(View view)
             {
                 newText = photoNoteEditEditText.getText().toString();
-                Intent newIntent = new Intent();
 
                 if (mSelectedPhotoUri != null)
                 {
-                    newIntent.putExtra("Photo", mSelectedPhotoUri);
-                    newIntent.putExtra("NewTextPhoto", newText);
-                    newIntent.putExtra("Position2", Position);
-                    setResult(RESULT_OK, newIntent);
+                    PhotoNote photoNoteRoom = new PhotoNote(photoNote.getColor(), newText, mSelectedPhotoUri);
+                    photoNoteRoom.setId(Position);
+                    mNoteViewModel.updatePhotoNote(photoNoteRoom);
+//                    newIntent.putExtra("Photo", mSelectedPhotoUri);
+//                    newIntent.putExtra("NewTextPhoto", newText);
+//                    newIntent.putExtra("Position2", Position);
                 }else{
                     BitmapDrawable drawable = (BitmapDrawable) photoNoteEditImageView.getDrawable();
                     Bitmap bitmap = drawable.getBitmap();
-                    newIntent.putExtra("Photo", getImageUri(PhotoNoteEdit.this , bitmap));
-                    newIntent.putExtra("Position2", Position);
-                    newIntent.putExtra("NewTextPhoto", newText);
-                    setResult(RESULT_OK, newIntent);
+                    PhotoNote photoNoteRoom = new PhotoNote(photoNote.getColor(), newText, getImageUri(PhotoNoteEdit.this,bitmap));
+                    photoNoteRoom.setId(Position);
+                    mNoteViewModel.updatePhotoNote(photoNoteRoom);
+//                    newIntent.putExtra("Photo", getImageUri(PhotoNoteEdit.this , bitmap));
+//                    newIntent.putExtra("Position2", Position);
+//                    newIntent.putExtra("NewTextPhoto", newText);
                 }
                 finish();
 

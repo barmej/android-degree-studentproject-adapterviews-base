@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.barmej.notesapp.Background.NoteRepository;
+import com.barmej.notesapp.classes.CheckNote;
 import com.barmej.notesapp.classes.Note;
 import com.barmej.notesapp.classes.PhotoNote;
 
@@ -18,6 +19,7 @@ public class NoteViewModel extends AndroidViewModel {
 
     private LiveData<List<Note>> mAllNotes;
     private LiveData<List<PhotoNote>> mAllPhotoNotes;
+    private LiveData<List<Note>> mAllNotesMerged;
 
 
     public NoteViewModel(@NonNull Application application) {
@@ -25,6 +27,7 @@ public class NoteViewModel extends AndroidViewModel {
         mNotesRepository = new NoteRepository(application);
         mAllNotes = mNotesRepository.getAllNotes();
         mAllPhotoNotes = mNotesRepository.getAllPhotoNotes();
+        mAllNotesMerged = mNotesRepository.getAllNotesMerged();
     }
 
     public void insert(Note note){
@@ -37,11 +40,30 @@ public class NoteViewModel extends AndroidViewModel {
 
     public void deleteNormalNote(Note note){ mNotesRepository.deleteNote(note);}
 
+    public void deletePhotoNote(PhotoNote photoNote){
+        mNotesRepository.deletePhotoNote(photoNote);
+    }
 
-    public void update(Note note){ mNotesRepository.updateNote(note);}
+    public void deleteCheckNote(CheckNote checkNote){
+        mNotesRepository.deleteCheckNote(checkNote);
+    }
+
+
+    public void updateNote(Note note){ mNotesRepository.updateNote(note);}
+
+    public void updateCheckNote(CheckNote checkNote){
+        mNotesRepository.updateCheckNote(checkNote);
+    }
+
+    public void updatePhotoNote(PhotoNote photoNote){
+        mNotesRepository.updatePhotoNote(photoNote);
+    }
 
     public LiveData<List<Note>> getAllNotes(){
         return mAllNotes;
+    }
+    public LiveData<List<Note>> getAllNotesMerged(){
+        return mAllNotesMerged;
     }
 
     public LiveData<List<PhotoNote>> getAllPhotoNotes(){
