@@ -31,38 +31,37 @@ public class NoteRepository {
         getAllPhotoNotes = mPhotoNoteDao.getAllPhotoNotes();
     }
 
-    private MediatorLiveData<List<PhotoNote>> mSectionLive = new MediatorLiveData<>();
 
-    public LiveData<List<PhotoNote>> getAllPhotoNotes2() {
-        final LiveData<List<PhotoNote>> sections = db.photoNoteDao().getAllPhotoNotes();
+    public LiveData<List<Note>> getAllNotes(){
+        return getAllNotes;
+    }
 
-        mSectionLive.addSource(sections, new Observer<List<PhotoNote>>() {
+    public LiveData<List<PhotoNote>> getAllPhotoNotes(){
+        if (getAllPhotoNotes == null){
+            getAllPhotoNotes = db.photoNoteDao().getAllPhotoNotes();
+        }
+        return getAllPhotoNotes;
+    }
+
+    public LiveData<List<Note>> getAllNotesMerged(){
+        MediatorLiveData liveDataMerger = new MediatorLiveData<>();
+        liveDataMerger.addSource(getAllNotes, new Observer() {
             @Override
-            public void onChanged(@Nullable List<PhotoNote> photoNoteList) {
-                if(photoNoteList == null || photoNoteList.isEmpty()) {
-                    // Fetch data from API
-                }else{
-                    mSectionLive.removeSource(sections);
-                    mSectionLive.setValue(photoNoteList);
-                }
+            public void onChanged(Object value) {
+                liveDataMerger.setValue(value);
             }
         });
-        return mSectionLive;
+
+        liveDataMerger.addSource(getAllPhotoNotes, new Observer() {
+            @Override
+            public void onChanged(Object o) {
+                liveDataMerger.setValue(o);
+            }
+        });
+
+        return liveDataMerger;
     }
 
-    public LiveData<List<Note>> getEntities() {
-        return mergeDataSources(
-                mNoteDao.getAllNotes()
-        );
-    }
-
-    private static LiveData<List<Note>> mergeDataSources(LiveData... sources) {
-        MediatorLiveData<List<Note>> mergedSources = new MediatorLiveData();
-        for (LiveData source : sources) {
-            mergedSources.addSource(source, mergedSources::setValue);
-        }
-        return mergedSources;
-    }
 
     //insert
     public void insertNote(Note note) {
@@ -72,20 +71,16 @@ public class NoteRepository {
 
     public void updateNote(Note note){ new UpdateAsyncTaskNote(mNoteDao).execute(note);}
 
-    public LiveData<List<Note>> getAllNotes(){
-        return getAllNotes;
-    }
 
     public void insertPhotoNote(PhotoNote photoNote) {
-        new InsertAsyncTaskPhotoNote(mPhotoNoteDao).execute(photoNote);}
-
-    public void deletePhotoNote(PhotoNote photoNote){
-        new DeleteAsyncTaskPhotoNote(mPhotoNoteDao).execute(photoNote);}
-
-    public LiveData<List<PhotoNote>> getAllPhotoNotes() {
-        return getAllPhotoNotes;
+        new InsertAsyncTaskPhotoNote(mPhotoNoteDao).execute(photoNote);
     }
 
+
+    public void deleteAllNotes(){
+        new DeleteAllAsyncTaskNote(mNoteDao).execute();
+        new DeleteAllAsyncTaskPhotoNote(mPhotoNoteDao).execute();
+    }
 
 
     private static class InsertAsyncTaskNote extends AsyncTask<Note, Void, Void>{
@@ -104,7 +99,7 @@ public class NoteRepository {
         }
     }
 
-    private class DeleteAsyncTaskNote extends AsyncTask<Note, Void, Void>{
+    private static class DeleteAsyncTaskNote extends AsyncTask<Note, Void, Void>{
 
         private NoteDao noteDao;
 
@@ -120,7 +115,35 @@ public class NoteRepository {
         }
     }
 
-    private class UpdateAsyncTaskNote extends AsyncTask<Note,Void,Void>{
+    private static class DeleteAllAsyncTaskNote extends AsyncTask<Note, Void, Void>{
+        NoteDao mNoteDao;
+
+        public DeleteAllAsyncTaskNote(NoteDao mNoteDao) {
+            this.mNoteDao = mNoteDao;
+        }
+
+        @Override
+        protected Void doInBackground(Note... notes) {
+            mNoteDao.deleteAllNotes();
+            return null;
+        }
+    }
+
+    private static class DeleteAllAsyncTaskPhotoNote extends AsyncTask<PhotoNote, Void, Void>{
+        PhotoNoteDao mPhotoNoteDao;
+
+        public DeleteAllAsyncTaskPhotoNote(PhotoNoteDao photoNoteDao) {
+            this.mPhotoNoteDao = photoNoteDao;
+        }
+
+        @Override
+        protected Void doInBackground(PhotoNote... photoNotes) {
+            mPhotoNoteDao.deleteAllNotes();
+            return null;
+        }
+    }
+
+    private static class UpdateAsyncTaskNote extends AsyncTask<Note,Void,Void>{
 
         private NoteDao noteDao;
 

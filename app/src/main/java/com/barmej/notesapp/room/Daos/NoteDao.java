@@ -28,10 +28,10 @@ public interface NoteDao {
     @Delete
     void delete(Note note);
 
-    @Transaction
-    @Query("SELECT * FROM notesTable")
-    public LiveData<List<AllNotes>> getAllTypesNotes();
 
     @Query("SELECT * FROM notesTable")
     LiveData<List<Note>> getAllNotes();
+
+    @Query("DELETE FROM notesTable")
+    void deleteAllNotes();
 }

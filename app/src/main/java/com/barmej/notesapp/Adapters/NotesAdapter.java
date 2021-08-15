@@ -1,6 +1,7 @@
 package com.barmej.notesapp.Adapters;
 
 import android.graphics.Color;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +27,7 @@ import java.util.List;
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> implements Serializable
 {
 
-    private static List<Note> notesArray;
+    private List<Note> notesArray;
     ItemLongClickListener mItemLongClickListener;
     ItemClickListener mItemClickListener;
 
@@ -121,7 +122,14 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
 
     public void setNormalNotes(List<Note> notes){
-        notesArray = notes;
+        notesArray.clear();
+       notesArray.addAll(notes);
+       notifyDataSetChanged();
+    }
+
+    public void setPhotoNotes(List<PhotoNote> photoNotes){
+        notesArray.clear();
+        notesArray.addAll(photoNotes);
         notifyDataSetChanged();
     }
 
@@ -163,7 +171,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
                 {
                     int index = getAdapterPosition();
                     mItemClickListener.onClickListener(position);
-                    mItemClickListener.onItemClick(notesArray.get(index));
                 }
             });
 

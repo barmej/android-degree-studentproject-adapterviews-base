@@ -24,24 +24,26 @@ public class NoteViewModel extends AndroidViewModel {
         super(application);
         mNotesRepository = new NoteRepository(application);
         mAllNotes = mNotesRepository.getAllNotes();
-        mAllPhotoNotes = mNotesRepository.getAllPhotoNotes2();
+        mAllPhotoNotes = mNotesRepository.getAllPhotoNotes();
     }
 
     public void insert(Note note){
         mNotesRepository.insertNote(note);
     }
 
+    public void deleteAll() {
+        mNotesRepository.deleteAllNotes();
+    }
+
     public void deleteNormalNote(Note note){ mNotesRepository.deleteNote(note);}
 
-    public LiveData<List<Note>> getAllAllNotes(){
-        return mNotesRepository.getEntities();
-    }
 
     public void update(Note note){ mNotesRepository.updateNote(note);}
 
     public LiveData<List<Note>> getAllNotes(){
         return mAllNotes;
     }
+
     public LiveData<List<PhotoNote>> getAllPhotoNotes(){
         return mAllPhotoNotes;
     }

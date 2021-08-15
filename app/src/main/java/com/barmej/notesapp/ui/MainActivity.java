@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -37,11 +38,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private List<Note> notesItems = new ArrayList<>();
+    private List<PhotoNote> photoNotesItems = new ArrayList<>();
     private NotesAdapter mNotesAdapter;
     private static final int RECEIVE_NOTES = 2003;
     private static final int EDIT_NOTES = 1000;
     private NoteViewModel mNoteViewModel;
-    private LiveData<List<PhotoNote>> allPhotoNotes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onLongClickItem(int position)
             {
-                Toast.makeText(MainActivity.this, position+"", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, position+" " + notesItems.size(), Toast.LENGTH_SHORT).show();
                 removeNote(position);
 
             }
@@ -80,12 +81,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClickListener(int position)
             {
-//                editNote(position);
+//                mNoteViewModel.deleteAll();
+
             }
 
             @Override
             public void onItemClick(Note note) {
-                if (note instanceof PhotoNote){
+                mNoteViewModel.deleteAll();
+                notesItems.clear();
+               /* if (note instanceof PhotoNote){
                     Intent intent = new Intent(MainActivity.this , PhotoNoteEdit.class);
                     intent.putExtra(Constants.EXTRA_ID , note.getId());
                     intent.putExtra(Constants.EXTRA_NOTE_TEXT , note.getNote());
@@ -105,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra(Constants.EXTRA_NOTE_TEXT , note.getNote());
                     intent.putExtra(Constants.COLOR, note.getColor());
                     startActivity(intent);
-                }
+                }*/
 
             }
         });
@@ -121,6 +125,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mNoteViewModel.getAllPhotoNotes().observe(this, new Observer<List<PhotoNote>>() {
+            @Override
+            public void onChanged(List<PhotoNote> photoNotes) {
+                photoNotesItems = photoNotes;
+                mNotesAdapter.setPhotoNotes(photoNotesItems);
+
+            }
+        });
+
+
+
 
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -134,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
                 int position = viewHolder.getAdapterPosition();
                 if (mNotesAdapter.getNoteAt(position) instanceof PhotoNote){
                     mNotesAdapter.notifyItemRemoved(position);
-                    notesItems.remove(position);
+//                    notesItems.remove(position);
                     Toast.makeText(MainActivity.this, "This was a PhotoNote", Toast.LENGTH_SHORT).show();
                 }else{
                     mNoteViewModel.deleteNormalNote(mNotesAdapter.getNoteAt(position));
@@ -150,6 +165,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
+
+        mNoteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
+            @Override
+            public void onChanged(List<Note> notes) {
+                mNotesAdapter.setNormalNotes(notes);
+                notesItems = notes;
+            }
+        });
 
 //        if (requestCode == RECEIVE_NOTES)
 //        {
@@ -265,32 +288,30 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void editNote(int position)
-    {
-        Note noteEdit = notesItems.get(position);
-
-        if (noteEdit instanceof PhotoNote)
-        {
-            Intent photoNoteIntent = new Intent(MainActivity.this , PhotoNoteEdit.class);
-
-            photoNoteIntent.putExtra("photoNote" , noteEdit);
-            photoNoteIntent.putExtra("Position" , position);
-
-            startActivityForResult( photoNoteIntent,EDIT_NOTES );
-
-        } else if (noteEdit instanceof CheckNote)
-        {
-//            Intent intent = new Intent(MainActivity.this , NormalNoteEdit.class);
-//            intent.putExtra(Constants.EXTRA_ID , note.getId());
-//            intent.putExtra(Constants.EXTRA_NOTE_TEXT , note.getNote());
-//            intent.putExtra(Constants.COLOR, note.getColor());
-//            startActivity(intent);
-
-        } else
-        {
-
-        }
-    }
+//    private void editNote(int position)
+//    {
+//        Note noteEdit = notesItems.get(position);
+//
+//        if (noteEdit instanceof PhotoNote)
+//        {
+//            Intent photoNoteIntent = new Intent(MainActivity.this , PhotoNoteEdit.class);
+//
+//            photoNoteIntent.putExtra("photoNote" , noteEdit);
+//            photoNoteIntent.putExtra("Position" , position);
+//
+//            startActivityForResult( photoNoteIntent,EDIT_NOTES );
+//
+//        } else if (noteEdit instanceof CheckNote)
+//        {
+////            Intent intent = new Intent(MainActivity.this , NormalNoteEdit.class);
+////            intent.putExtra(Constants.EXTRA_ID , note.getId());
+////            intent.putExtra(Constants.EXTRA_NOTE_TEXT , note.getNote());
+////            intent.putExtra(Constants.COLOR, note.getColor());
+////            startActivity(intent);
+//
+//        } else
+//        {
+//
 
 
 

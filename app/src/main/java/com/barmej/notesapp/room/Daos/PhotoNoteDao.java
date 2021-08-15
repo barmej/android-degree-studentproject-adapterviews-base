@@ -28,4 +28,7 @@ public interface PhotoNoteDao {
 
     @Query("SELECT * FROM photoNotesTable")
     LiveData<List<PhotoNote>> getAllPhotoNotes();
+
+    @Query("DELETE FROM photoNotesTable")
+    void deleteAllNotes();
 }

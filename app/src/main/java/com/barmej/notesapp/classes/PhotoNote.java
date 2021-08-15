@@ -16,7 +16,6 @@ public class PhotoNote extends Note implements Parcelable {
     private Uri image;
 
 
-
     public PhotoNote(int noteColor, String note, Uri image) {
         super(noteColor, note);
         this.image = image;
