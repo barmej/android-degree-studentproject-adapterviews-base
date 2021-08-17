@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.barmej.notesapp.classes.CheckNote;
@@ -53,32 +54,33 @@ public class NoteRepository {
         return getAllPhotoNotes;
     }
 
-    public LiveData<List<Note>> getAllNotesMerged(){
+    public MediatorLiveData<Note> getAllNotesMerged(){
         MediatorLiveData liveDataMerger = new MediatorLiveData<>();
-        liveDataMerger.addSource(getAllNotes, new Observer() {
+
+        liveDataMerger.addSource(getAllNotes, new Observer<List<Note>>() {
             @Override
-            public void onChanged(Object value) {
-                liveDataMerger.setValue(value);
+            public void onChanged(List<Note> notes) {
+                liveDataMerger.postValue(notes);
             }
         });
 
-        liveDataMerger.addSource(getAllPhotoNotes, new Observer() {
+        liveDataMerger.addSource(getAllPhotoNotes, new Observer<List<PhotoNote>>() {
             @Override
-            public void onChanged(Object o) {
-                liveDataMerger.setValue(o);
+            public void onChanged(List<PhotoNote> photoNotes) {
+                liveDataMerger.postValue(photoNotes);
+
             }
         });
 
         liveDataMerger.addSource(getAllCheckNotes, new Observer() {
             @Override
             public void onChanged(Object o) {
-                liveDataMerger.setValue(o);
+                liveDataMerger.postValue(o);
             }
         });
 
         return liveDataMerger;
     }
-
 
     //insert
     public void insertNote(Note note) {

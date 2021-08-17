@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 
 import com.barmej.notesapp.Background.NoteRepository;
 import com.barmej.notesapp.classes.CheckNote;
@@ -19,7 +20,8 @@ public class NoteViewModel extends AndroidViewModel {
 
     private LiveData<List<Note>> mAllNotes;
     private LiveData<List<PhotoNote>> mAllPhotoNotes;
-    private LiveData<List<Note>> mAllNotesMerged;
+    private LiveData<List<CheckNote>> mAllCheckNotes;
+    private MediatorLiveData mAllNotesMerged;
 
 
     public NoteViewModel(@NonNull Application application) {
@@ -28,6 +30,7 @@ public class NoteViewModel extends AndroidViewModel {
         mAllNotes = mNotesRepository.getAllNotes();
         mAllPhotoNotes = mNotesRepository.getAllPhotoNotes();
         mAllNotesMerged = mNotesRepository.getAllNotesMerged();
+        mAllCheckNotes = mNotesRepository.getAllCheckNotes();
     }
 
     public void insert(Note note){
@@ -62,7 +65,12 @@ public class NoteViewModel extends AndroidViewModel {
     public LiveData<List<Note>> getAllNotes(){
         return mAllNotes;
     }
-    public LiveData<List<Note>> getAllNotesMerged(){
+
+    public LiveData<List<CheckNote>> getAllCheckNote(){
+        return mAllCheckNotes;
+    }
+
+    public MediatorLiveData getAllNotesMerged(){
         return mAllNotesMerged;
     }
 

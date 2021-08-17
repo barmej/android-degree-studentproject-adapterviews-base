@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,12 +23,13 @@ import com.barmej.notesapp.classes.PhotoNote;
 import com.barmej.notesapp.R;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> implements Serializable
 {
 
-    public List<Note> notesArray;
+    public List<Note> notesArray = new ArrayList<>();
     ItemLongClickListener mItemLongClickListener;
     ItemClickListener mItemClickListener;
 
@@ -120,20 +122,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     }
 
 
-    public void setNormalNotes(List<Note> notes){
-        notesArray = notes;
-       notifyDataSetChanged();
-    }
-
-    public void setPhotoNotes(List<PhotoNote> photoNotes){
-        if (notesArray != null){
-            notesArray.clear();
-            notesArray.addAll(photoNotes);
-        }
-        notifyDataSetChanged();
-    }
-
-
     @Override
     public int getItemCount()
     {
@@ -164,6 +152,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
                 public boolean onLongClick(View view)
                 {
                     mItemLongClickListener.onLongClickItem(position);
+
                     return false;
                 }
             });
@@ -173,7 +162,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
                 @Override
                 public void onClick(View view)
                 {
-                    int index = getAdapterPosition();
                     mItemClickListener.onClickListener(position);
                 }
             });
@@ -205,5 +193,57 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
     public Note getNoteAt(int pos){
         return notesArray.get(pos);
+    }
+
+    public void setNormalNotes(List<Note> notes){
+        if (notesArray != null) {
+            for (int i = 0; i < notesArray.size(); i++) {
+                if (notesArray.get(i) instanceof PhotoNote || notesArray.get(i) instanceof CheckNote) {
+                    System.out.println("setNormalNotes: PhotoNote");
+                } else {
+                    notesArray.remove(i);
+                }
+            }
+
+            notesArray.addAll(notes);
+            notifyDataSetChanged();
+        }else{
+            System.out.println("notesArray is null");
+        }
+    }
+
+    public void setPhotoNotes(List<PhotoNote> photoNotes){
+        if (notesArray != null) {
+
+
+            for (int i = 0; i < notesArray.size(); i++) {
+                if (notesArray.get(i) instanceof PhotoNote) {
+                    notesArray.remove(i);
+                } else {
+                    System.out.println("setPhotoNotes: Check or Normal note");
+                }
+            }
+
+            notesArray.addAll(photoNotes);
+            notifyDataSetChanged();
+        }else{
+            System.out.println("notesArray is null");
+        }
+    }
+
+    public void setCheckNotes(List<CheckNote> checkNotes){
+        if (notesArray != null) {
+            for (int i = 0; i < notesArray.size(); i++) {
+                if (notesArray.get(i) instanceof CheckNote) {
+                    notesArray.remove(i);
+                } else {
+                    System.out.println("setCheckNotes: Photo or Normal note");
+                }
+            }
+            notesArray.addAll(checkNotes);
+            notifyDataSetChanged();
+        }else{
+            System.out.println("notesArray is null");
+        }
     }
 }

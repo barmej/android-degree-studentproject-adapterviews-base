@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="5dp"
-            android:textColor="@color/colorAccent"
+            android:textColor="#000000"
             android:fontFamily="@font/cairo"
             android:text="TextView"
             android:textSize="18sp"

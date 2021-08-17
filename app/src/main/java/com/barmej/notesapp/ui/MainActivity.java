@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.barmej.notesapp.Adapters.NotesAdapter;
+import com.barmej.notesapp.Background.NoteRepository;
 import com.barmej.notesapp.extra.Constants;
 import com.barmej.notesapp.Listener.ItemClickListener;
 import com.barmej.notesapp.Listener.ItemLongClickListener;
@@ -27,6 +28,8 @@ import com.barmej.notesapp.NotesEdit.CheckNoteEdit;
 import com.barmej.notesapp.NotesEdit.NormalNoteEdit;
 import com.barmej.notesapp.NotesEdit.PhotoNoteEdit;
 import com.barmej.notesapp.R;
+import com.barmej.notesapp.room.Daos.NoteDao;
+import com.barmej.notesapp.room.NotesRoomDb;
 import com.barmej.notesapp.room.ViewModels.NoteViewModel;
 import com.barmej.notesapp.extra.ViewSpaces;
 import com.barmej.notesapp.classes.CheckNote;
@@ -38,7 +41,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private List<Note> notesItems = new ArrayList<>();
     private NotesAdapter mNotesAdapter;
     private static final int RECEIVE_NOTES = 2003;
     private static final int EDIT_NOTES = 1000;
@@ -81,31 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 editNote(position);
             }
 
-            @Override
-            public void onItemClick(Note note) {
-               /* if (note instanceof PhotoNote){
-                    Intent intent = new Intent(MainActivity.this , PhotoNoteEdit.class);
-                    intent.putExtra(Constants.EXTRA_ID , note.getId());
-                    intent.putExtra(Constants.EXTRA_NOTE_TEXT , note.getNote());
-                    intent.putExtra(Constants.COLOR, note.getColor());
-                    startActivity(intent);
 
-                } else if (note instanceof CheckNote){
-                    Intent intent = new Intent(MainActivity.this , CheckNoteEdit.class);
-                    intent.putExtra(Constants.EXTRA_ID , note.getId());
-                    intent.putExtra(Constants.EXTRA_NOTE_TEXT , note.getNote());
-                    intent.putExtra(Constants.COLOR, note.getColor());
-                    startActivity(intent);
-
-                } else {
-                    Intent intent = new Intent(MainActivity.this , NormalNoteEdit.class);
-                    intent.putExtra(Constants.EXTRA_ID , note.getId());
-                    intent.putExtra(Constants.EXTRA_NOTE_TEXT , note.getNote());
-                    intent.putExtra(Constants.COLOR, note.getColor());
-                    startActivity(intent);
-                }*/
-
-            }
         });
 
         notesRecyclerView.setAdapter(mNotesAdapter);
@@ -113,10 +91,31 @@ public class MainActivity extends AppCompatActivity {
         notesRecyclerView.addItemDecoration(new ViewSpaces(20));
 
         mNoteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
-        mNoteViewModel.getAllNotesMerged().observe(this, new Observer<List<Note>>() {
+//        mNoteViewModel.getAllNotesMerged().observe(this, new Observer<List<Note>>() {
+//            @Override
+//            public void onChanged(List<Note> notes) {
+//                mNotesAdapter.setNormalNotes(notes);
+//            }
+//        });
+
+        mNoteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
                 mNotesAdapter.setNormalNotes(notes);
+            }
+        });
+
+        mNoteViewModel.getAllPhotoNotes().observe(this, new Observer<List<PhotoNote>>() {
+            @Override
+            public void onChanged(List<PhotoNote> photoNotes) {
+                mNotesAdapter.setPhotoNotes(photoNotes);
+            }
+        });
+
+        mNoteViewModel.getAllCheckNote().observe(this, new Observer<List<CheckNote>>() {
+            @Override
+            public void onChanged(List<CheckNote> checkNotes) {
+                mNotesAdapter.setCheckNotes(checkNotes);
             }
         });
 
@@ -148,12 +147,36 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
+        mNoteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
+//        mNoteViewModel.getAllNotesMerged().observe(this, new Observer<List<Note>>() {
+//            @Override
+//            public void onChanged(List<Note> notes) {
+//                mNotesAdapter.setNormalNotes(notes);
+//                notesItems = notes;
+//            }
+//        });
 
-        mNoteViewModel.getAllNotesMerged().observe(this, new Observer<List<Note>>() {
+        mNoteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
                 mNotesAdapter.setNormalNotes(notes);
-                notesItems = notes;
+//                setNormalNotes(notes);
+            }
+        });
+
+        mNoteViewModel.getAllPhotoNotes().observe(this, new Observer<List<PhotoNote>>() {
+            @Override
+            public void onChanged(List<PhotoNote> photoNotes) {
+                mNotesAdapter.setPhotoNotes(photoNotes);
+//                setPhotoNotes(photoNotes);
+            }
+        });
+
+        mNoteViewModel.getAllCheckNote().observe(this, new Observer<List<CheckNote>>() {
+            @Override
+            public void onChanged(List<CheckNote> checkNotes) {
+                mNotesAdapter.setCheckNotes(checkNotes);
+//                setCheckNotes(checkNotes);
             }
         });
 
@@ -237,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void removeNote(final int position) {
-
+        Toast.makeText(this, position + " , " + mNotesAdapter.notesArray.size(), Toast.LENGTH_SHORT).show();
         AlertDialog alertDialog = new AlertDialog.Builder(this )
                 .setMessage(R.string.delete_confirmation)
 
@@ -272,7 +295,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void editNote(int position) {
-        Note noteEdit = notesItems.get(position);
+        Note noteEdit = mNotesAdapter.notesArray.get(position);
+
 
         if (noteEdit instanceof PhotoNote) {
             PhotoNote photoNote = (PhotoNote) noteEdit;
@@ -298,6 +322,53 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
     }
+
+//    public void setNormalNotes(List<Note> notes){
+//        if (notesItems != null) {
+//            for (int i = 0; i < notesItems.size(); i++) {
+//                if (notesItems.get(i) instanceof PhotoNote || notesItems.get(i) instanceof CheckNote) {
+//                    System.out.println("setNormalNotes: PhotoNote");
+//                } else {
+//                    notesItems.remove(i);
+//                }
+//            }
+//
+//            notesItems.addAll(notes);
+//        }else{
+//            System.out.println("notesItems is null");
+//        }
+//    }
+//
+//    public void setPhotoNotes(List<PhotoNote> photoNotes){
+//        if (notesItems != null) {
+//            for (int i = 0; i < notesItems.size(); i++) {
+//                if (notesItems.get(i) instanceof PhotoNote) {
+//                    notesItems.remove(i);
+//                } else {
+//                    System.out.println("setPhotoNotes: Check or Normal note");
+//                }
+//            }
+//
+//            notesItems.addAll(photoNotes);
+//        }else{
+//            System.out.println("notesItems is null");
+//        }
+//    }
+//
+//    public void setCheckNotes(List<CheckNote> checkNotes){
+//        if (notesItems != null) {
+//            for (int i = 0; i < notesItems.size(); i++) {
+//                if (notesItems.get(i) instanceof CheckNote) {
+//                    notesItems.remove(i);
+//                } else {
+//                    System.out.println("setCheckNotes: Photo or Normal note");
+//                }
+//            }
+//            notesItems.addAll(checkNotes);
+//        }else{
+//            System.out.println("notesItems is null");
+//        }
+//    }
 
 
 }

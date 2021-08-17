@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.barmej.notesapp.extra.Constants;
 import com.barmej.notesapp.R;
@@ -42,7 +43,9 @@ public class CheckNoteEdit extends AppCompatActivity {
         boolean checkBoxStatus = bundle.getBoolean("CheckBox status");
 
         checkBox.setChecked(checkBoxStatus);
-        checkBox.setBackgroundColor(Color.GREEN);
+        if (checkBox.isChecked()){
+            checkBox.setBackgroundColor(Color.GREEN);
+        }
         constraintLayout.setBackgroundColor(noteColor);
         checkNoteEditEditText.setText(noteText);
         mNoteViewModel = ViewModelProviders.of(this ).get(NoteViewModel.class);
