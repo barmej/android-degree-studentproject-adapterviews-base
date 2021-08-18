@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2 ,1);
 
 
-        mNotesAdapter = new NotesAdapter(new ItemLongClickListener()
+        mNotesAdapter = new NotesAdapter(this,new ItemLongClickListener()
         {
             @Override
             public void onLongClickItem(int position)
@@ -101,23 +101,23 @@ public class MainActivity extends AppCompatActivity {
         mNoteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
-                mNotesAdapter.setNormalNotes(notes);
+                mNotesAdapter.setNormalNotesTest(notes);
             }
         });
 
-        mNoteViewModel.getAllPhotoNotes().observe(this, new Observer<List<PhotoNote>>() {
-            @Override
-            public void onChanged(List<PhotoNote> photoNotes) {
-                mNotesAdapter.setPhotoNotes(photoNotes);
-            }
-        });
-
-        mNoteViewModel.getAllCheckNote().observe(this, new Observer<List<CheckNote>>() {
-            @Override
-            public void onChanged(List<CheckNote> checkNotes) {
-                mNotesAdapter.setCheckNotes(checkNotes);
-            }
-        });
+//        mNoteViewModel.getAllPhotoNotes().observe(this, new Observer<List<PhotoNote>>() {
+//            @Override
+//            public void onChanged(List<PhotoNote> photoNotes) {
+//                mNotesAdapter.setPhotoNotes(photoNotes, mNoteViewModel);
+//            }
+//        });
+//
+//        mNoteViewModel.getAllCheckNote().observe(this, new Observer<List<CheckNote>>() {
+//            @Override
+//            public void onChanged(List<CheckNote> checkNotes) {
+//                mNotesAdapter.setCheckNotes(checkNotes, mNoteViewModel);
+//            }
+//        });
 
 
 
@@ -159,26 +159,26 @@ public class MainActivity extends AppCompatActivity {
         mNoteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
-                mNotesAdapter.setNormalNotes(notes);
+                mNotesAdapter.setNormalNotesTest(notes);
 //                setNormalNotes(notes);
             }
         });
 
-        mNoteViewModel.getAllPhotoNotes().observe(this, new Observer<List<PhotoNote>>() {
-            @Override
-            public void onChanged(List<PhotoNote> photoNotes) {
-                mNotesAdapter.setPhotoNotes(photoNotes);
-//                setPhotoNotes(photoNotes);
-            }
-        });
-
-        mNoteViewModel.getAllCheckNote().observe(this, new Observer<List<CheckNote>>() {
-            @Override
-            public void onChanged(List<CheckNote> checkNotes) {
-                mNotesAdapter.setCheckNotes(checkNotes);
-//                setCheckNotes(checkNotes);
-            }
-        });
+//        mNoteViewModel.getAllPhotoNotes().observe(this, new Observer<List<PhotoNote>>() {
+//            @Override
+//            public void onChanged(List<PhotoNote> photoNotes) {
+//                mNotesAdapter.setPhotoNotes(photoNotes, mNoteViewModel);
+////                setPhotoNotes(photoNotes);
+//            }
+//        });
+//
+//        mNoteViewModel.getAllCheckNote().observe(this, new Observer<List<CheckNote>>() {
+//            @Override
+//            public void onChanged(List<CheckNote> checkNotes) {
+//                mNotesAdapter.setCheckNotes(checkNotes, mNoteViewModel);
+////                setCheckNotes(checkNotes);
+//            }
+//        });
 
 
 //        if (requestCode == RECEIVE_NOTES)
