@@ -204,85 +204,19 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
 
     public void setNormalNotes(List<Note> notes, NoteViewModel mNoteViewModel){
-        if (notesArray != null) {
-            for (int i = 0; i < notesArray.size(); i++) {
-                Note note = notesArray.get(i);
-                if (note instanceof PhotoNote || note instanceof CheckNote) {
-                    System.out.println("setNormalNotes: PhotoNote");
-                } else {
-                    notesArray.remove(note);
-//                    mNoteViewModel.deleteNormalNote(note);
-                    System.out.println(mNoteViewModel);
-                    notifyItemRemoved(i);
-                }
-            }
-            notesArray.addAll(notes);
-            notifyDataSetChanged();
-            System.out.println("notesArray size is: " + notesArray.size());
-        }else{
-            System.out.println("notesArray is null");
-        }
+        notesArray.addAll(notes);
+        notifyDataSetChanged();
     }
 
-    public void setNormalNotesTest(List<Note> notes){
-        if (notesArray != null){
-            for (int i = 0; i < notesArray.size(); i++) {
-                Note note = notesArray.get(i);
-                if (note instanceof PhotoNote || note instanceof CheckNote) {
-                    System.out.println("setNormalNotes: PhotoNote");
-                } else {
-                    notesArray.remove(note);
-//                    mNoteViewModel.deleteNormalNote(note);
-                    notifyItemRemoved(i);
-                }
 
-                for (int j = i + 1 ; j < notesArray.size(); j++) {
-                    if (notesArray.get(i).getId() == notesArray.get(j).getId()) {
-                        notesArray.remove(i);
-                        notifyItemRemoved(i);
-                    }
-                }
-            }
-            notesArray.addAll(notes);
-            notifyDataSetChanged();
-        }
-    }
 
     public void setPhotoNotes(List<PhotoNote> photoNotes, NoteViewModel mNoteViewModel){
-        if (notesArray != null) {
-            for (int i = 0; i < notesArray.size(); i++) {
-                Note note =  notesArray.get(i);
-                if (note instanceof PhotoNote) {
-                    notesArray.remove(note);
-//                    mNoteViewModel.deletePhotoNote((PhotoNote) note);
-                    notifyItemRemoved(i);
-                } else {
-                    System.out.println("setPhotoNotes: Check or Normal note");
-                }
-            }
-            notesArray.addAll(photoNotes);
-            notifyDataSetChanged();
-        }else{
-            System.out.println("notesArray is null");
-        }
+        notesArray.addAll(photoNotes);
+        notifyDataSetChanged();
     }
 
     public void setCheckNotes(List<CheckNote> checkNotes, NoteViewModel mNoteViewModel){
-        if (notesArray != null) {
-            for (int i = 0; i < notesArray.size(); i++) {
-                Note note = notesArray.get(i);
-                if (note instanceof CheckNote) {
-                    notesArray.remove(note);
-//                    mNoteViewModel.deleteCheckNote((CheckNote) note);
-                    notifyItemRemoved(i);
-                } else {
-                    System.out.println("setCheckNotes: Photo or Normal note");
-                }
-            }
-            notesArray.addAll(checkNotes);
-            notifyDataSetChanged();
-        }else{
-            System.out.println("notesArray is null");
-        }
+        notesArray.addAll(checkNotes);
+        notifyDataSetChanged();
     }
 }

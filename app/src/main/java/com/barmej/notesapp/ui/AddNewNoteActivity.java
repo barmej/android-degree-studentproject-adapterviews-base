@@ -19,10 +19,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.barmej.notesapp.R;
-import com.barmej.notesapp.room.ViewModels.AddNewNormalNoteViewModel;
 import com.barmej.notesapp.classes.CheckNote;
 import com.barmej.notesapp.classes.Note;
 import com.barmej.notesapp.classes.PhotoNote;
+import com.barmej.notesapp.room.ViewModels.NoteViewModel;
 
 import java.io.Serializable;
 
@@ -59,7 +59,7 @@ public class AddNewNoteActivity extends AppCompatActivity implements Serializabl
 
     private Button addButton;
 
-    private AddNewNormalNoteViewModel mAddNewNoteViewModel;
+    private NoteViewModel mNoteViewModel;
 
 
     @Override
@@ -184,7 +184,7 @@ public class AddNewNoteActivity extends AppCompatActivity implements Serializabl
             }
         });
 
-        mAddNewNoteViewModel = ViewModelProviders.of(this).get(AddNewNormalNoteViewModel.class);
+        mNoteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
     }
 
     @Override
@@ -265,7 +265,7 @@ public class AddNewNoteActivity extends AppCompatActivity implements Serializabl
                 Toast.makeText(this, R.string.Must_Enter_Text, Toast.LENGTH_SHORT).show();
             }else{
                 PhotoNote photoNote = new PhotoNote(cardViewColor , photoNoteText , mSelectedPhotoUri);
-                mAddNewNoteViewModel.insertPhotoNote(photoNote);
+                mNoteViewModel.insertPhotoNote(photoNote);
                 finish();
             }
 
@@ -275,7 +275,7 @@ public class AddNewNoteActivity extends AppCompatActivity implements Serializabl
                 Toast.makeText(this, R.string.Must_Enter_Text, Toast.LENGTH_SHORT).show();
             }else{
                 CheckNote checkNote = new CheckNote(cardViewColor , checkBoxText, false);
-                mAddNewNoteViewModel.insertCheckNote(checkNote);
+                mNoteViewModel.insertCheckNote(checkNote);
                 finish();
             }
 
@@ -285,7 +285,7 @@ public class AddNewNoteActivity extends AppCompatActivity implements Serializabl
                 Toast.makeText(this, R.string.Must_Enter_Text, Toast.LENGTH_SHORT).show();
             }else {
                 Note note = new Note(cardViewColor , normalNoteText);
-                mAddNewNoteViewModel.insert(note);
+                mNoteViewModel.insert(note);
                 finish();
             }
         }

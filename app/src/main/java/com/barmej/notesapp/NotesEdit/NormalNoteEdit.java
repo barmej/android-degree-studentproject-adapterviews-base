@@ -9,16 +9,16 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.barmej.notesapp.extra.Constants;
-import com.barmej.notesapp.room.ViewModels.EditNormalNoteViewModel;
 import com.barmej.notesapp.R;
 import com.barmej.notesapp.classes.Note;
+import com.barmej.notesapp.room.ViewModels.NoteViewModel;
 
 public class NormalNoteEdit extends AppCompatActivity {
     private EditText normalNoteEditEditText;
     private Button changeBtn;
     private ConstraintLayout constraintLayout;
     private int position;
-    private EditNormalNoteViewModel mEditNormalNoteViewModel;
+    private NoteViewModel mNoteViewModel;
 
 
     @Override
@@ -38,13 +38,13 @@ public class NormalNoteEdit extends AppCompatActivity {
         position = bundle.getInt(Constants.EXTRA_ID);
         constraintLayout.setBackgroundColor(bundleNoteColor);
 
-        mEditNormalNoteViewModel = ViewModelProviders.of(NormalNoteEdit.this).get(EditNormalNoteViewModel.class);
+        mNoteViewModel = ViewModelProviders.of(NormalNoteEdit.this).get(NoteViewModel.class);
 
         changeBtn.setOnClickListener(view -> {
             String newText = normalNoteEditEditText.getText().toString();
             Note noteRoom = new Note(bundleNoteColor , newText);
             noteRoom.setId(position);
-            mEditNormalNoteViewModel.update(noteRoom);
+            mNoteViewModel.updateNote(noteRoom);
             finish();
         });
     }

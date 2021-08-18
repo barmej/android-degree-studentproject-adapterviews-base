@@ -33,9 +33,20 @@ public class NoteViewModel extends AndroidViewModel {
         mAllCheckNotes = mNotesRepository.getAllCheckNotes();
     }
 
+
+
     public void insert(Note note){
         mNotesRepository.insertNote(note);
     }
+
+    public void insertPhotoNote(PhotoNote photoNote){
+        mNotesRepository.insertPhotoNote(photoNote);
+    }
+
+    public void insertCheckNote(CheckNote checkNote){
+        mNotesRepository.insertCheckNote(checkNote);
+    }
+
 
     public void deleteAll() {
         mNotesRepository.deleteAllNotes();
