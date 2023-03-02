@@ -8,7 +8,7 @@
         android:id="@+id/frameLayout"
         android:layout_width="0dp"
         android:layout_height="200dp"
-        android:background="@color/colorAccent"
+        android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/typeRadioGroup"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +50,8 @@
             android:layout_margin="4dp"
             android:layout_weight="1"
             android:button="@drawable/radio_button_blue"
-            android:checked="true" />
+            android:checked="true"
+            app:useMaterialThemeColors="false" />
 
         <RadioButton
             android:id="@+id/radioButton"
@@ -59,7 +60,8 @@
             android:layout_margin="4dp"
             android:layout_weight="1"
             android:button="@drawable/radio_button_yellow"
-            android:checked="false" />
+            android:checked="false"
+            app:useMaterialThemeColors="false" />
 
         <RadioButton
             android:id="@+id/radioButton2"
@@ -67,7 +69,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:layout_weight="1"
-            android:button="@drawable/radio_button_red" />
+            android:button="@drawable/radio_button_red"
+            app:useMaterialThemeColors="false" />
 
     </RadioGroup>
 
@@ -91,7 +94,8 @@
             android:layout_margin="4dp"
             android:layout_weight="1"
             android:button="@drawable/radio_button_note"
-            android:checked="true" />
+            android:checked="false"
+            app:useMaterialThemeColors="false" />
 
         <RadioButton
             android:id="@+id/radioButton5"
@@ -100,7 +104,8 @@
             android:layout_margin="4dp"
             android:layout_weight="1"
             android:button="@drawable/radio_button_check_box"
-            android:checked="false" />
+            android:checked="false"
+            app:useMaterialThemeColors="false" />
 
         <RadioButton
             android:id="@+id/radioButton4"
@@ -109,7 +114,8 @@
             android:layout_margin="4dp"
             android:layout_weight="1"
             android:button="@drawable/radio_button_photo"
-            android:checked="false" />
+            android:checked="true"
+            app:useMaterialThemeColors="false" />
 
     </RadioGroup>
 
@@ -252,8 +258,8 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_submit"
-        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="0dp"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
