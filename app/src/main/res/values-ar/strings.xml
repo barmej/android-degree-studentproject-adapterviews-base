@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">تطبيق الملاحظات</string>
+    <string name="add_new_item_description">يمكنك  إضافة ملاحظة إلى القائمة و اختيار نوع ولون الملاحظة.</string>
+    <string name="add">اضافة</string>
+    <string name="add_note_text">أضف ملاحظة</string>
+    <string name="note_added_successfully">تم إضافة الملاحظة بنجاح!</string>
+    <string name="note_updated_successfully">تم تعديل الملاحظة بنجاح!</string>
+    <string name="delete_confirmation">هل أنت متأكد من حذف الملاحظة ؟</string>
+    <string name="confirm">تأكيد</string>
+    <string name="cancel">إلغاء</string>
+    <string name="error_read_permission_not_granted">التطبيق يحتاج الحصول على الصلاحية للوصول إلى مستعرض الصور</string>
+    <string name="save_confirmation">هل تريد حفظ التغييرات؟</string>
+    <string name="yes">نعم</string>
+    <string name="no">لا</string>
+    <string name="error_empty_note">لا يمكن حفظ ملاحظة فارغة!</string>
+    <string name="error_no_photo">لم تقم باختيار الصورة المرفقة مع الملاحظة!</string>
+</resources>

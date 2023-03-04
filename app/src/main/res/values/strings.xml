@@ -1,6 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Notes App</string>
-    <string name="add_new_item_description">يمكنك  إضافة ملاحظة إلى القائمة و اختيار نوع ولون الملاحظة.</string>
-    <string name="add">اضافة</string>
-    <string name="add_note_text">أضف ملاحظة</string>
+    <string name="add_new_item_description">You can add a new note to the list and choose the type of the note you want to add!</string>
+    <string name="add">Add</string>
+    <string name="add_note_text">Add Note</string>
+    <string name="note_added_successfully">Note Added Successfully !</string>
+    <string name="note_updated_successfully">Note Updated Successfully !</string>
+    <string name="delete_confirmation">Are you sure you want to remove this note ?</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="error_read_permission_not_granted">Permission needed in order to access photos gallery!</string>
+    <string name="save_confirmation">Do you want to save changes ?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="error_empty_note">Note can\'t be empty !</string>
+    <string name="error_no_photo">You can\'t save a photo note without adding a photo!</string>
 </resources>
